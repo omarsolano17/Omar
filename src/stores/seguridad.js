@@ -43,6 +43,9 @@ export const useSeguridadStore = defineStore("seguridad", {
     verificar(compania, usuario) {
       return api.get(`ususu/verificar/${compania}/${usuario}`);
     },
+    verificar2(compania, usuario, clave) {
+      return api.get(`ususu/verificar2/${compania}/${usuario}/${clave}`);
+    },
     ingresar(compania, usuario, clave) {
       const data = {
         COMPANIA: compania,

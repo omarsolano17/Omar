@@ -5,6 +5,7 @@
     style="background-size: cover; background-repeat: no-repeat"
   > -->
   <q-page class="bg-main">
+    omar
     <div class="q-pa-md" style="height: 98vh">
       <div class="row shadow-10" style="height: 102%">
         <div
@@ -79,14 +80,34 @@
                     ]"
                     :loading="cargando"
                   />
-                  <div>
-                    <q-btn
-                      :label="$t('button.continuar')"
-                      type="submit"
-                      color="primary"
-                      class="full-width btn-main"
-                    />
-                  </div>
+                  <!-- termina usuario -->
+                  <!-- empieza clave -->
+                  <q-input
+                    v-model="claveWeb"
+                    filled
+                    :type="isPwd ? 'password' : 'text'"
+                    :label="$t('form.login.clave_label')"
+                    :hint="$t('form.login.clave_hint')"
+                    ref="claveWeb"
+                    lazy-rules
+                  >
+                    <template v-slot:append>
+                      <q-icon
+                        :name="isPwd ? 'visibility_off' : 'visibility'"
+                        class="cursor-pointer"
+                        @click="isPwd = !isPwd"
+                      />
+                    </template>
+                  </q-input>
+                  <q-btn
+                    :label="$t('button.ingresar')"
+                    type="submit"
+                    color="primary"
+                    icon="lock_open"
+                    :loading="cargando"
+                    class="btn-main"
+                  />
+                  <!-- termina clave -->
                   <div>
                     <span class="text-bold text-orange-8"
                       >v{{ $q.version }}</span
@@ -185,57 +206,6 @@
                 </div>
               </transition>
             </div>
-            <div
-              class="q-pa-md bg-light-blue-1 bg-transparent shadow-2 rounded-borders login-box"
-              v-else
-            >
-              <transition
-                appear
-                enter-active-class="animated bounceInLeft"
-                leave-active-class="animated bounceOutRight"
-              >
-                <div @keydown.esc="regresarAInicio()">
-                  <div class="text-h4 text-italic text-indigo" v-if="nombre">
-                    {{ nombre }}
-                  </div>
-                  <q-form @submit="onLogin" class="q-gutter-md">
-                    <q-input
-                      v-model="claveWeb"
-                      filled
-                      :type="isPwd ? 'password' : 'text'"
-                      :label="$t('form.login.clave_label')"
-                      :hint="$t('form.login.clave_hint')"
-                      ref="claveWeb"
-                      lazy-rules
-                    >
-                      <template v-slot:append>
-                        <q-icon
-                          :name="isPwd ? 'visibility_off' : 'visibility'"
-                          class="cursor-pointer"
-                          @click="isPwd = !isPwd"
-                        />
-                      </template>
-                    </q-input>
-
-                    <q-btn
-                      :label="$t('button.cancelar')"
-                      color="negative"
-                      icon="close"
-                      @click="identificado = 0"
-                      class="btn-cancel"
-                    />
-                    <q-btn
-                      :label="$t('button.ingresar')"
-                      type="submit"
-                      color="primary"
-                      icon="lock_open"
-                      :loading="cargando"
-                      class="btn-main"
-                    />
-                  </q-form>
-                </div>
-              </transition>
-            </div>
           </div>
         </div>
       </div>
@@ -289,6 +259,7 @@ export default {
       "fetchCompanias",
       "setCompaniaFavorita",
       "verificar",
+      "verificar2",
       "ingresar",
       "configurar",
       "setJWT",
@@ -321,7 +292,7 @@ export default {
     },
     onSubmit() {
       this.cargando = true;
-      this.verificar(this.compania.COMPANIA, this.usuario)
+      this.verificar2(this.compania.COMPANIA, this.usuario, this.claveWeb)
         .then((res) => {
           if (res.data.res !== "ok") {
             this.$q.notify({
@@ -348,14 +319,19 @@ export default {
                 usuario = data[0];
               }
               if (usuario) {
+                console.log(
+                  "encontró que cumplió con todo:",
+                  usuario.NOMBRE,
+                  usuario.REGISTRADO
+                );
                 this.nombre = usuario.NOMBRE;
                 if (usuario.REGISTRADO === 1) {
-                  this.identificado = 2;
+                  // this.identificado = 2;
                   setTimeout(() => {
-                    this.$refs.claveWeb.focus();
+                    // this.$refs.claveWeb.focus();
                   }, 20);
                 } else {
-                  this.identificado = 1;
+                  // this.identificado = 1;
                 }
               } else {
                 this.$q.notify({
