@@ -130,7 +130,7 @@
                     {{ nombre }}
                   </div>
                   <q-form @submit="onConfigurar" class="q-gutter-md">
-                    <q-input
+                    <!-- <q-input
                       type="password"
                       autocomplete="new-password"
                       id="claveKrystalos"
@@ -145,7 +145,7 @@
                           (val && val.length > 0) ||
                           this.$t('form.required_text'),
                       ]"
-                    />
+                    /> -->
                     <q-input
                       type="password"
                       autocomplete="new-password"
@@ -225,7 +225,6 @@ export default {
       image: "./background.jpg",
       usuario: null,
       clave: null,
-      clave2: null,
       identificado: 0,
       compania: null,
       cargando: false,
@@ -319,19 +318,13 @@ export default {
                 usuario = data[0];
               }
               if (usuario) {
-                console.log(
-                  "encontró que cumplió con todo:",
-                  usuario.NOMBRE,
-                  usuario.REGISTRADO
-                );
                 this.nombre = usuario.NOMBRE;
                 if (usuario.REGISTRADO === 1) {
-                  // this.identificado = 2;
-                  setTimeout(() => {
-                    // this.$refs.claveWeb.focus();
-                  }, 20);
+                  this.onLogin();
                 } else {
-                  // this.identificado = 1;
+                  this.claveKrystalos = this.claveWeb;
+                  this.claveWeb = null;
+                  this.identificado = 1;
                 }
               } else {
                 this.$q.notify({
@@ -484,7 +477,7 @@ export default {
                 message: this.$t("form.login.success"),
                 actions: [{ icon: "close", color: "white" }],
               });
-              this.regresarAInicio();
+              this.onLogin();
             }
           }
         })
