@@ -367,56 +367,56 @@ export default {
               });
               this.$refs.claveWeb.select();
             } else {
+              this.$q.loading.show({
+                message: "Cargando datos del usuario",
+              });
               this.setJWT(jwt);
               api.defaults.headers.common["Authorization"] = "Bearer " + jwt;
-              this.$q.loading.show({
-                message: this.$t("form.login.cargando_mes"),
-              });
-              this.json({ MODELO: "MED_COL", METODO: "ESPECIALIDADES" })
-                .then((res) => {
-                  if (res.data.res === "ok") {
-                    usuario.MEDS = res.data.result.recordset;
-                  }
-                })
-                .then(() => {
-                  this.$q.loading.show({
-                    message: "Consultando los datos de propiedad...",
-                  });
-                  api.get("/ususu/dpr").then((res) => {
-                    if (
-                      res.data.res !== "ok" ||
-                      res.data.result.data.recordset.length <= 0
-                    ) {
-                      this.cargando = false;
-                      this.$q.notify({
-                        color: "negative",
-                        textColor: "white",
-                        icon: "error",
-                        message:
-                          "No se ha podido encontrar los datos del propietario en la base de datos",
-                        progress: true,
-                        actions: [{ icon: "close", color: "white" }],
-                      });
-                    } else {
-                      let dpr = res.data.result.data.recordset[0];
-                      let apikey_openai = dpr.APIKEY_OPENAI;
-                      if (apikey_openai) {
-                        apikey_openai = JSON.parse(apikey_openai);
-                        if (apikey_openai.length > 0)
-                          dpr.APIKEY_OPENAI = apikey_openai[0];
-                      }
-                      this.setDPR(res.data.result.data.recordset[0]);
-                      this.setLogo(null);
-                      this.setLogoSecundario(null);
-                      this.setUsuario(usuario);
-                      this.$router.push({ name: "home" });
-                      this.cargando = false;
-                    }
-                  });
-                })
-                .catch((err) => {
-                  console.error(err);
-                });
+              this.setLogo(null);
+              this.setLogoSecundario(null);
+              this.setUsuario(usuario);
+              this.$router.push({ name: "home" });
+              this.cargando = false;
+              // this.json({ MODELO: "MED_COL", METODO: "ESPECIALIDADES" })
+              //   .then((res) => {
+              //     if (res.data.res === "ok") {
+              //       usuario.MEDS = res.data.result.recordset;
+              //     }
+              //   })
+              //   .then(() => {
+              //     this.$q.loading.show({
+              //       message: "Consultando los datos de propiedad...",
+              //     });
+              //     api.get("/ususu/dpr").then((res) => {
+              //       if (
+              //         res.data.res !== "ok" ||
+              //         res.data.result.data.recordset.length <= 0
+              //       ) {
+              //         this.cargando = false;
+              //         this.$q.notify({
+              //           color: "negative",
+              //           textColor: "white",
+              //           icon: "error",
+              //           message:
+              //             "No se ha podido encontrar los datos del propietario en la base de datos",
+              //           progress: true,
+              //           actions: [{ icon: "close", color: "white" }],
+              //         });
+              //       } else {
+              //         let dpr = res.data.result.data.recordset[0];
+              //         let apikey_openai = dpr.APIKEY_OPENAI;
+              //         if (apikey_openai) {
+              //           apikey_openai = JSON.parse(apikey_openai);
+              //           if (apikey_openai.length > 0)
+              //             dpr.APIKEY_OPENAI = apikey_openai[0];
+              //         }
+              //         this.setDPR(res.data.result.data.recordset[0]);
+              //       }
+              //     });
+              //   })
+              //   .catch((err) => {
+              //     console.error(err);
+              //   });
             }
           } else {
             this.$q.notify({

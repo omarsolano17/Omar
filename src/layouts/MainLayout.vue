@@ -16,7 +16,7 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-        <q-toolbar-title> Qrystalos </q-toolbar-title>
+        <q-toolbar-title> Solano Enterprise </q-toolbar-title>
         <!-- <div>(Quasar v{{ $q.version }})&nbsp;</div> -->
         <!-- <CambioDatosUsuario :usuario="usuario" /> -->
         <q-separator spaced inset vertical dark />
