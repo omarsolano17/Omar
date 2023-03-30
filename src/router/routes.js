@@ -29,6 +29,22 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/conf",
+    component: () => import("src/layouts/ConfiguracionLayout.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("pages/conf/IndexPage.vue"),
+        name: "conf",
+      },
+      {
+        path: "grupos",
+        component: () => import("pages/conf/GruposPages.vue"),
+        name: "conf.grupos",
+      },
+    ],
+  },
   // Always leave this as last one,
   // but you can also remove it
   {

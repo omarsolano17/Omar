@@ -44,7 +44,7 @@
     >
       <q-list>
         <EssentialLink
-          v-for="link in appStore.menu"
+          v-for="link in appStore.menuConfiguracion"
           :key="link.title"
           v-bind="link"
         />
@@ -105,7 +105,7 @@ onMounted(() => {
   }, 200);
 
   setTimeout(() => {
-    const menu = appStore.menu;
+    const menu = appStore.menuConfiguracion;
     if (
       menu.length <= 0 ||
       (menu.agrupados?.length <= 0 &&
@@ -117,7 +117,7 @@ onMounted(() => {
         message: "Cargando menú...",
       });
       appStore
-        .json({ MODELO: "MENUQ_COL", METODO: "CENTRAL" })
+        .json({ MODELO: "MENUQ_COL", METODO: "CONFIGURACION" })
         .then((res) => {
           if (res.data.res === "ok") {
             res.data.result.recordsets[3].forEach((el) => {
@@ -128,8 +128,9 @@ onMounted(() => {
                 icon: el.ICONO || "code",
               });
             });
+
             appStore.setMenu({
-              modulo: "central",
+              modulo: "configuracion",
               menu: essentialLinks,
             });
           }
