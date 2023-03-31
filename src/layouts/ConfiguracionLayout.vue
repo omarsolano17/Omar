@@ -99,10 +99,10 @@ onMounted(() => {
   lockMiniState.value = appStore.getLockMiniState;
   miniState.value = appStore.getMiniState;
 
-  setTimeout(() => {
-    appStore.setColor("primary", "#F77E4F");
-    appStore.setColor("secondary", "#0f60b5");
-  }, 200);
+  // setTimeout(() => {
+  //   appStore.setColor("primary", "#F77E4F");
+  //   appStore.setColor("secondary", "#0f60b5");
+  // }, 200);
 
   setTimeout(() => {
     const menu = appStore.menuConfiguracion;
