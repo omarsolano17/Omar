@@ -12,6 +12,7 @@
     "icon": "icongenie g -i logo.png"
   },
   "dependencies": {
+    "@quasar/cli": "^2.0.0",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "pinia": "^2.0.11",

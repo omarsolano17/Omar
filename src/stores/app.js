@@ -16,42 +16,12 @@ export const useAppStore = defineStore("app", {
       submenus: [],
       individuales: [],
     },
-    menuAsistencial: {
-      agrupados: [],
-      submenus: [],
-      individuales: [],
-    },
-    menuConsultaExterna: {
-      agrupados: [],
-      submenus: [],
-      individuales: [],
-    },
-    menuInventario: {
-      agrupados: [],
-      submenus: [],
-      individuales: [],
-    },
     menuConfiguracion: {
       agrupados: [],
       submenus: [],
       individuales: [],
     },
-    menuAutorizacion: {
-      agrupados: [],
-      submenus: [],
-      individuales: [],
-    },
-    menuAdministrativo: {
-      agrupados: [],
-      submenus: [],
-      individuales: [],
-    },
-    menuReportes: {
-      agrupados: [],
-      submenus: [],
-      individuales: [],
-    },
-    menuDocumental: {
+    menuUtilidades: {
       agrupados: [],
       submenus: [],
       individuales: [],
@@ -67,13 +37,8 @@ export const useAppStore = defineStore("app", {
     getLogoSecundario: (state) => state.logoSecundario,
     getDpr: (state) => state.dpr,
     getMenu: (state) => state.menu,
-    getMenuConsultaExterna: (state) => state.menuConsultaExterna,
-    getMenuAdministrativo: (state) => state.menuAdministrativo,
-    getMenuAutorizacion: (state) => state.menuAutorizacion,
     getMenuConfiguracion: (state) => state.menuConfiguracion,
-    getMenuInventario: (state) => state.menuInventario,
-    getMenuReportes: (state) => state.menuReportes,
-    getMenuDocumental: (state) => state.menuDocumental,
+    getMenuUtilidades: (state) => state.menuUtilidades,
     getLeftDrawerOpen: (state) => state.leftDrawerOpen,
     getLockMiniState: (state) => state.lockMiniState,
     getMiniState: (state) => state.miniState,
@@ -167,33 +132,14 @@ export const useAppStore = defineStore("app", {
         return;
       }
       switch (payload.modulo) {
-        case "asistencial":
-          this.menuAsistencial = payload.menu;
-          break;
         case "central":
           this.menu = payload.menu;
-          break;
-        case "consultae":
-          this.menuConsultaExterna = payload.menu;
-          break;
-        case "inventario":
-          this.menuInventario = payload.menu;
           break;
         case "configuracion":
           this.menuConfiguracion = payload.menu;
           break;
-        case "autorizacion":
-          this.menuAutorizacion = payload.menu;
-          break;
-        case "administrativo":
-          this.menuAdministrativo = payload.menu;
-          break;
-        case "reportes":
-          this.menuReportes = payload.menu;
-          break;
-        case "documental":
-          this.menuDocumental = payload.menu;
-        default:
+        case "utilidades":
+          this.menuUtilidades = payload.menu;
           break;
       }
     },

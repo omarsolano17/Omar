@@ -9,12 +9,6 @@ const routes = [
         meta: { requiresAuth: true },
         name: "home",
       },
-      {
-        path: "chat",
-        component: () => import("pages/app/ChatPage.vue"),
-        meta: { requiresAuth: true },
-        name: "chat",
-      },
     ],
   },
 
@@ -42,6 +36,22 @@ const routes = [
         path: "grupos",
         component: () => import("pages/conf/GruposPages.vue"),
         name: "conf.grupos",
+      },
+    ],
+  },
+  {
+    path: "/util",
+    component: () => import("src/layouts/UtilidadesLayout.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("pages/util/IndexPage.vue"),
+        name: "util",
+      },
+      {
+        path: "notificaciones",
+        component: () => import("pages/util/NotificacionesPage.vue"),
+        name: "util.notificaciones",
       },
     ],
   },

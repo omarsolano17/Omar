@@ -11,7 +11,7 @@
         <div
           class="col-12 col-md-6 col-sm-6 flex flex-center bg-light large-screen-only"
         >
-          <img alt="Qrystalos logo" src="img/logo.png" />
+          <img alt="Omar logo" src="img/logo.png" />
         </div>
         <div class="col-12 col-md-6 col-sm-6 bg-form shadow-1">
           <div
@@ -19,7 +19,7 @@
             @keydown.esc="regresarAInicio"
           >
             <div class="q-pa-xl q-mb-xl text-bold btn-main text-white">
-              Ingresar a Qrystalos
+              Ingresar a Solano Page
             </div>
           </div>
           <div class="flex flex-center q-pt-xl" v-if="true">

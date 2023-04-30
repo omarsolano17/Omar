@@ -9,7 +9,7 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
 const SOCKET_URL = "http://localhost:3001";
-const OSOLANO = "http://localhost:3000/";
+const OSOLANO = "http://192.168.0.29:3000/";
 const BASE_URL = OSOLANO;
 
 const { configure } = require("quasar/wrappers");
@@ -109,7 +109,7 @@ module.exports = configure(function (/* ctx */) {
       // (like functional components as one of the examples),
       // you can manually specify Quasar components/directives to be available everywhere:
       //
-      // components: [],
+      // components: ["QDatetime"],
       // directives: [],
 
       // Quasar plugins

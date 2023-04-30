@@ -2,7 +2,7 @@
 // so you can safely delete all default props below
 
 export default {
-  nombre_sistema: "Qrystalos Asistencial",
+  nombre_sistema: "OSOLANO",
   button: {
     ok: "Aceptar",
     yes: "Sí",
