@@ -9,7 +9,7 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
 const SOCKET_URL = "http://localhost:3001";
-const OSOLANO = "http://192.168.0.29:3000/";
+const OSOLANO = "http://192.168.0.29:3001/";
 const BASE_URL = OSOLANO;
 
 const { configure } = require("quasar/wrappers");

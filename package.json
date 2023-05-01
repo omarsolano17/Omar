@@ -2,7 +2,7 @@
   "name": "omarpk",
   "version": "0.0.1",
   "description": "omardescproject",
-  "productName": "omarproduct",
+  "productName": "Omar Solano",
   "author": "omarsolano17 <omaryesidsolano@outlook.com>",
   "private": true,
   "scripts": {
@@ -12,7 +12,7 @@
     "icon": "icongenie g -i logo.png"
   },
   "dependencies": {
-    "@quasar/cli": "^2.0.0",
+    "@quasar/cli": "^2.0.1",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "pinia": "^2.0.11",
