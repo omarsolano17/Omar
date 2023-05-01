@@ -127,8 +127,8 @@
               dense
               outlined
               class="col-3 q-pa-xs"
+              :rules="[(val) => (val && val.value.length > 0) || 'Obligatorio']"
             />
-            <!-- :rules="[(val) => (val && val.value.length > 0) || 'Obligatorio']" -->
             <q-input
               v-if="noti.WHATSAPP || noti.SMS"
               v-model="noti.CELULAR"
@@ -154,8 +154,8 @@
               dense
               outlined
               class="col-12 q-pa-xs"
+              :rules="[(val) => (val && val.length > 5) || 'Obligatorio']"
             />
-            <!-- :rules="[(val) => (val && val.length > 10) || 'Obligatorio']" -->
             <q-input
               v-model="noti.AVISARDESDE"
               type="number"
@@ -164,8 +164,8 @@
               outlined
               :disable="false"
               class="col-3 q-pa-xs"
+              :rules="[(val) => (val && val.length > 0) || 'Obligatorio']"
             />
-            <!-- :rules="[(val) => (val && val.value.length > 0) || 'Obligatorio']" -->
             <q-select
               v-model="noti.TIPOAVISO"
               label="Avisar clase"
@@ -174,8 +174,8 @@
               outlined
               :disable="false"
               class="col-3 q-pa-xs"
+              :rules="[(val) => (val && val.value.length > 0) || 'Obligatorio']"
             />
-            <!-- :rules="[(val) => (val && val.value.length > 0) || 'Obligatorio']" -->
             <q-input
               v-model="noti.FRECUENCIA"
               type="number"
@@ -184,8 +184,8 @@
               outlined
               :disable="true"
               class="col-3 q-pa-xs"
+              :rules="[(val) => (val && val.length > 0) || 'Obligatorio']"
             />
-            <!-- :rules="[(val) => (val && val.value.length > 0) || 'Obligatorio']" -->
             <q-select
               v-model="noti.TIPOFRECUENCIA"
               label="Tipo Frecuencia"
@@ -194,9 +194,8 @@
               outlined
               :disable="true"
               class="col-3 q-pa-xs"
+              :rules="[(val) => (val && val.value.length > 0) || 'Obligatorio']"
             />
-            {{ noti.CELULAR.length }}
-            <!-- :rules="[(val) => (val && val.value.length > 0) || 'Obligatorio']" -->
           </q-card-section>
           <q-card-actions align="right" class="row q-gutter-xs">
             <q-btn label="Guardar" no-caps type="submit" color="primary" />
@@ -261,7 +260,7 @@ const noti = ref({
   CELULAR: "",
   EMAIL: "",
   AVISARDESDE: 1,
-  TIPOAVISO: "Dias",
+  TIPOAVISO: opt.value.TIPOFRECUENCIA.find((el) => el.value == "Dias"),
   FRECUENCIA: 1,
   TIPOFRECUENCIA: "Horas",
   API_WHATSAPP: "",
