@@ -30,7 +30,7 @@
             color="primary"
             icon="add"
             round
-            @click="notiDialog = true"
+            @click="crudNOTI('Insertar', '')"
             size="sm"
           >
             <q-tooltip
@@ -53,7 +53,7 @@
       transition-hide="slide-down"
       :persistent="dialogMaximixed"
     >
-      <q-card style="width: 100%; max-width: 100vw">
+      <q-card style="width: 90%; max-width: 90vw">
         <q-bar dark class="bg-secondary">
           <div class="col text-center text-weight-bold">
             {{ noti?.PROCESO }} Notificacion
@@ -72,7 +72,16 @@
               dense
               outlined
               :stack-label="true"
-              class="col-6 q-pa-xs"
+              class="col-4 q-pa-xs"
+            />
+            <q-input
+              v-model="noti.HORA_NOTIFICA"
+              type="time"
+              label="Hora de notificacion"
+              dense
+              outlined
+              :stack-label="true"
+              class="col-2 q-pa-xs"
             />
             <!-- :rules="[(val) => val || 'Obligatorio']" -->
             <q-toggle
@@ -216,7 +225,7 @@ import { useSeguridadStore } from "stores/seguridad";
 import { useRouter } from "vue-router";
 import { useAppStore } from "src/stores/app";
 import { useUtilidadesStore } from "src/stores/utilidades";
-import { date, useQuasar, uid } from "quasar";
+import { useQuasar, uid } from "quasar";
 import { useFechas } from "boot/useFechas";
 
 //end region
@@ -237,6 +246,7 @@ const {
   getFechaLarga,
   getFechaLargaGringa,
   getHora,
+  getDate,
 } = useFechas();
 
 const opt = ref({
@@ -253,6 +263,7 @@ const opt = ref({
 const noti = ref({
   PROCESO: "Insertar",
   FECHA_NOTIFICA: null,
+  HORA_NOTIFICA: null,
   NOTIFICACION: null,
   CORREO: false,
   WHATSAPP: true,
@@ -303,11 +314,29 @@ const dtNOTI = ref({
   ],
   columnas_filtro: "NOTIFICACION",
 });
-
 //region methods
 const onSelect = (fila) => {
   // console.log("omar:")
 };
+const crudNOTI = (mode, fila) => {
+  if (mode == "Insertar") {
+    noti.value.PROCESO = mode;
+    onReset();
+    notiDialog.value = true;
+  }
+};
+const onReset = () => {
+  noti.value.FECHA_NOTIFICA = getDate("date");
+  noti.value.HORA_NOTIFICA = getDate("time");
+  noti.value.NOTIFICACION = null;
+  noti.value.AVISARDESDE = 1;
+  noti.value.TIPOAVISO = opt.value.TIPOFRECUENCIA.find(
+    (el) => el.value == "Dias"
+  );
+  noti.value.FRECUENCIA = 1;
+  noti.value.TIPOFRECUENCIA = "Horas";
+};
+
 const onTakeCompletedNOTI = () => {
   if (onValida()) {
     appStore
@@ -317,6 +346,7 @@ const onTakeCompletedNOTI = () => {
         PARAMETROS: {
           PROCESO: noti.value.PROCESO,
           FECHA_NOTIFICA: noti.value.FECHA_NOTIFICA,
+          HORA_NOTIFICA: noti.value.HORA_NOTIFICA,
           NOTIFICACION: noti.value.NOTIFICACION,
           WHATSAPP: noti.value.WHATSAPP,
           SMS: noti.value.SMS,
