@@ -1,8 +1,28 @@
 <template>
   <q-page class="q-pa-xs">
-    <div class="row q-col-gutter-sm">
+    <div class="row q-col-gutter-sm q-pa-sm">
       <!-- AQUI PAGE
+
       <q-btn color="blue" @click="onBack" label="OMAR" /> -->
+
+      <q-input
+        v-model="filtro.FECHA_INICIAL"
+        type="date"
+        label="Fecha Ini"
+        dense
+        outlined
+        :stack-label="true"
+        class="col-4 q-pa-xs"
+      />
+      <q-input
+        v-model="filtro.FECHA_FINAL"
+        type="date"
+        label="Fecha fin"
+        dense
+        outlined
+        :stack-label="true"
+        class="col-4 q-pa-xs"
+      />
       <ServerSideTableComponent
         ref="tableMEMO"
         :titulo="dtMEMO.titulo"
@@ -11,9 +31,9 @@
         :row_key="dtMEMO.row_key"
         :columnas_visibles="dtMEMO.columnas_visibles"
         :ordenarPor="dtMEMO.ordenarPor"
-        @fila="onSelect($event)"
+        @fila="crudMEMO('Editar', $event)"
         :dense="true"
-        :condicion_adicional="where"
+        :condicion_adicional="whereMEMO"
         :columnas_filtro="dtMEMO.columnas_filtro"
         :inner_join="dtMEMO.inner_join"
         :left_join="dtMEMO.left_join"
@@ -30,7 +50,7 @@
             color="primary"
             icon="add"
             round
-            @click="memoDialog = true"
+            @click="crudMEMO('Insertar', '')"
             size="sm"
           >
             <q-tooltip
@@ -39,7 +59,7 @@
               transition-hide="flip-left"
               :offset="[10, 10]"
             >
-              Agregar Notificacion
+              Agregar evento
             </q-tooltip>
           </q-btn>
         </template>
@@ -56,87 +76,32 @@
       <q-card style="width: 100%; max-width: 100vw">
         <q-bar dark class="bg-secondary">
           <div class="col text-center text-weight-bold">
-            {{ memo?.PROCESO }} Notificacion
+            {{ memo?.PROCESO }} evento {{ memo.ID }}
           </div>
           <q-btn dense flat round icon="close" v-close-popup />
         </q-bar>
         <q-form @submit="onTakeCompletedMEMO()">
           <q-card-section class="q-pa-none row">
             <q-input
-              v-model="memo.FECHA_NOTIFICA"
+              v-model="memo.FECHA_EVENTO"
               type="date"
-              label="Fecha de notificacion"
+              label="Fecha del Evento"
               dense
               outlined
-              class="col-6 q-pa-xs"
+              class="col-4 q-pa-xs"
             />
-            <q-toggle
-              v-model="memo.WHATSAPP"
-              color="green-6"
-              icon="send"
-              class="col-1 q-pa-xs"
-            >
-              <q-tooltip
-                class="bg-primary text-white text-body2"
-                transition-show="flip-right"
-                transition-hide="flip-left"
-                :offset="[10, 10]"
-              >
-                Enviar por WhatsApp
-              </q-tooltip></q-toggle
-            >
-            <q-toggle
-              v-model="memo.SMS"
-              color="pink"
-              icon="textsms"
-              class="col-1 q-pa-xs"
-            >
-              <q-tooltip
-                class="bg-primary text-white text-body2"
-                transition-show="flip-right"
-                transition-hide="flip-left"
-                :offset="[10, 10]"
-              >
-                Enviar por Mensajes de texto
-              </q-tooltip></q-toggle
-            >
-            <q-toggle
-              v-model="memo.CORREO"
-              color="blue-5"
-              icon="mail"
-              class="col-1 q-pa-xs"
-            >
-              <q-tooltip
-                class="bg-primary text-white text-body2"
-                transition-show="flip-right"
-                transition-hide="flip-left"
-                :offset="[10, 10]"
-              >
-                Enviar por Correo
-              </q-tooltip></q-toggle
-            >
             <q-input
-              v-if="memo.WHATSAPP || memo.SMS"
-              v-model="memo.CELULAR"
+              v-model="memo.PERSONA"
               type="text"
-              label="Celular"
+              label="Persona"
               dense
               outlined
-              class="col-6 q-pa-xs"
+              class="col-8 q-pa-xs"
             />
             <q-input
-              v-if="memo.CORREO"
-              v-model="memo.EMAIL"
+              v-model="memo.EVENTO"
               type="text"
-              label="Correo"
-              dense
-              outlined
-              class="col-6 q-pa-xs"
-            />
-            <q-input
-              v-model="memo.NOTIFICACION"
-              type="text"
-              label="Notificacion"
+              label="Evento"
               dense
               outlined
               class="col-12 q-pa-xs"
@@ -161,6 +126,7 @@ import { useSeguridadStore } from "stores/seguridad";
 import { useRouter } from "vue-router";
 import { useAppStore } from "src/stores/app";
 import { date, useQuasar, uid } from "quasar";
+import { useFechas } from "boot/useFechas";
 //end region
 
 //region data
@@ -168,83 +134,105 @@ const router = useRouter();
 const SeguridadStore = useSeguridadStore();
 const appStore = useAppStore();
 const grupoSel = ref(null);
-const notiDialog = ref(false);
+const memoDialog = ref(false);
 const $q = useQuasar();
 const tableMEMO = ref(null);
 const dialogMaximixed = ref(false);
+const USUARIO = ref(null);
+const {
+  getFechaCorta,
+  getFechaCortaGringa,
+  getFechaLarga,
+  getFechaLargaGringa,
+  getHora,
+  getDate,
+} = useFechas();
 
 const memo = ref({
   PROCESO: "Insertar",
-  FECHA_NOTIFICA: null,
-  NOTIFICACION: null,
-  CORREO: false,
-  WHATSAPP: true,
-  SMS: true,
-  CELULAR: "",
-  EMAIL: "",
+  ID: null,
+  FECHA_EVENTO: null,
+  EVENTO: null,
+  PERSONA: null,
 });
 
+const filtro = ref({
+  FECHA_INICIAL: getFechaCortaGringa(date.formatDate(new Date(), "2001-01-01")),
+  FECHA_FINAL: getFechaCortaGringa(date.formatDate(new Date(), "YYYY-MM-DD")),
+});
 const dtMEMO = ref({
-  titulo: "Notificaciones",
-  tabla: "NOTI",
+  titulo: "Eventos",
+  tabla: "MEMO",
   row_key: "ID",
-  ordenarPor: "ID",
-  columnas_visibles: `ID, FECHA_REGISTRO, USUARIO_REGISTRO, FECHA_NOTIFICA, NOTIFICACION, SMS, WHATSAPP, CORREO`,
+  ordenarPor: "FECHA_EVENTO DESC",
+  columnas_visibles: `ID, FECHA_EVENTO, EVENTO, PERSONA`,
   columnas: [
     {
-      name: "FECHA_REGISTRO",
+      name: "FECHA_EVENTO",
       required: true,
-      label: "Fecha Ingresa",
+      label: "Fecha Evento",
       align: "left",
-      field: (row) => row.FECHA_REGISTRO,
+      field: (row) => row.FECHA_EVENTO,
+      format: (val) => `${getFechaCorta(val)}`,
+      sortable: true,
+    },
+    {
+      name: "PERSONA",
+      required: true,
+      label: "Persona",
+      align: "left",
+      field: (row) => row.PERSONA,
       format: (val) => val,
       sortable: true,
     },
     {
-      name: "NOTIFICACION",
+      name: "EVENTO",
       required: true,
-      label: "Notificacion",
+      label: "Evento",
       align: "left",
-      field: (row) => row.NOTIFICACION,
-      format: (val) => val,
-      sortable: true,
-    },
-    {
-      name: "FECHA_NOTIFICA",
-      required: true,
-      label: "Fecha de Notificacion",
-      align: "left",
-      field: (row) => row.FECHA_NOTIFICA,
+      field: (row) => row.EVENTO,
       format: (val) => val,
       sortable: true,
     },
   ],
-  columnas_filtro: "NOTIFICACION",
+  columnas_filtro: "EVENTO, PERSONA",
 });
 
+const crudMEMO = (mode, fila) => {
+  memo.value.PROCESO = mode;
+  if (mode == "Insertar") {
+    onReset();
+    memoDialog.value = true;
+  }
+  if (mode == "Editar") {
+    llenarMEMO(fila);
+  }
+};
+const llenarMEMO = (fila) => {
+  memo.value.ID = fila.ID;
+  memo.value.FECHA_EVENTO = getFechaCortaGringa(fila.FECHA_EVENTO);
+  memo.value.EVENTO = fila.EVENTO;
+  memo.value.PERSONA = fila.PERSONA;
+  memoDialog.value = true;
+};
+const onReset = () => {
+  memo.value.ID = null;
+  memo.value.FECHA_EVENTO = getDate("date");
+  memo.value.EVENTO = null;
+  memo.value.PERSONA = null;
+};
 //region methods
-const onBack = () => {
-  SeguridadStore.setJWT(null);
-  // router.push({ name: "conf" });
-};
-const onSelect = (fila) => {
-  console.log("omar:", fila?.GRUPO);
-  grupoSel.value = fila?.GRUPO;
-};
 const onTakeCompletedMEMO = () => {
   appStore
     .json({
-      MODELO: "NOTI",
-      METODO: "CRUDNOTI",
+      MODELO: "MEMO",
+      METODO: "CRUDMEMO",
       PARAMETROS: {
         PROCESO: memo.value.PROCESO,
-        FECHA_NOTIFICA: memo.value.FECHA_NOTIFICA,
-        NOTIFICACION: memo.value.NOTIFICACION,
-        WHATSAPP: memo.value.WHATSAPP,
-        SMS: memo.value.SMS,
-        EMAIL: memo.value.EMAIL,
-        CELULAR: memo.value.CELULAR,
-        CORREO: memo.value.CORREO,
+        ID: memo.value.ID,
+        FECHA_EVENTO: memo.value.FECHA_EVENTO,
+        EVENTO: memo.value.EVENTO,
+        PERSONA: memo.value.PERSONA,
       },
     })
     .then((res) => {
@@ -258,48 +246,47 @@ const onTakeCompletedMEMO = () => {
           position: "top",
           timeout: 2000,
         });
-        notiDialog.value = false;
+        memoDialog.value = false;
         setTimeout(() => {
-          tablememo.value.obligarRefrescar();
+          tableMEMO.value.obligarRefrescar();
         }, 200);
       }
     });
 };
 //end region
 
-//region Computed
-const whereUSGRUH = computed(() => {
-  let cond = null;
-  if (!grupoSel.value) {
-    cond = ` 1 = 2 `;
-  } else {
-    cond = ` USGRUH.GRUPO = '${grupoSel.value}'`;
-  }
-  return cond;
+//region Hooks
+onMounted(() => {
+  USUARIO.value = SeguridadStore.getUsuario.USUARIO;
 });
-const titulo = computed(() => {
-  let cond = null;
-  if (!grupoSel.value) {
-    cond = ``;
-  } else {
-    cond = ` Permisos del grupo ${grupoSel.value}`;
+//end region
+
+//region Computed
+const whereMEMO = computed(() => {
+  let cond = ` 1 = 2 `;
+  if (USUARIO.value) {
+    cond = ` USUARIO_REGISTRO = '${USUARIO.value}'`;
+
+    if (filtro.value.FECHA_INICIAL) {
+      cond += ` AND FECHA_EVENTO>= '${getFechaCorta(
+        filtro.value.FECHA_INICIAL
+      )}'`;
+    }
+    if (filtro.value.FECHA_FINAL) {
+      cond += ` AND FECHA_EVENTO<= '${getFechaCorta(
+        filtro.value.FECHA_FINAL
+      )}'`;
+    }
   }
   return cond;
 });
 //end region
 //region Watch
 
-// watch(whereUSGRUH, (newWhere, oldWhere) => {
-//   setTimeout(() => {
-//     tableUSGRUH.value?.obligarRefrescar();
-//   }, 100);
-// });
-//end region
-
-//region Hooks
-onMounted(() => {
-  memo.value.EMAIL = SeguridadStore.getUsuario.EMAIL;
-  memo.value.CELULAR = SeguridadStore.getUsuario.CELULAR;
+watch(whereMEMO, (newWhere, oldWhere) => {
+  setTimeout(() => {
+    tableMEMO.value?.obligarRefrescar();
+  }, 100);
 });
 //end region
 </script>

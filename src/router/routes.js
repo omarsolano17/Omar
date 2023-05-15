@@ -18,7 +18,7 @@ const routes = [
     children: [
       {
         path: "",
-        component: () => import("pages/seguridad/IngresarPage.vue"),
+        component: () => import("pages/Seguridad/IngresarPage.vue"),
         name: "ingresar",
       },
     ],
@@ -52,6 +52,11 @@ const routes = [
         path: "notificaciones",
         component: () => import("pages/util/NotificacionesPage.vue"),
         name: "util.notificaciones",
+      },
+      {
+        path: "memoria",
+        component: () => import("pages/util/MemoriaPage.vue"),
+        name: "util.memoria",
       },
     ],
   },

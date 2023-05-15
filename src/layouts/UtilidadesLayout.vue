@@ -93,7 +93,7 @@ const $q = useQuasar();
 
 //#region Hooks
 onMounted(() => {
-  menu.value = appStore.getMenu;
+  menu.value = appStore.getMenuUtilidades;
   guardarPreferencias.value = false;
   leftDrawerOpen.value = appStore.getLeftDrawerOpen;
   lockMiniState.value = appStore.getLockMiniState;
@@ -103,7 +103,6 @@ onMounted(() => {
   //   appStore.setColor("primary", "#F77E4F");
   //   appStore.setColor("secondary", "#0f60b5");
   // }, 200);
-
   setTimeout(() => {
     const menu = appStore.menuUtilidades;
     if (
