@@ -392,24 +392,24 @@ const onReset = () => {
   onStore();
 };
 const llenarNOTI = (fila) => {
-  (noti.value.ID = fila.ID),
-    (noti.value.FECHA_NOTIFICA = getFechaCortaGringa(fila.FECHA_NOTIFICA));
+  noti.value.ID = fila.ID;
+  noti.value.FECHA_NOTIFICA = getFechaCortaGringa(fila.FECHA_NOTIFICA);
   noti.value.HORA_NOTIFICA = getHora(fila.FECHA_NOTIFICA);
   noti.value.NOTIFICACION = fila.NOTIFICACION;
   noti.value.AVISARDESDE = fila.AVISARDESDE;
-  noti.value.TIPOAVISO = opt.value.TIPOFRECUENCIA.find(
-    (el) => el.value == fila.TIPOAVISO
-  );
   noti.value.FRECUENCIA = 1;
   noti.value.TIPOFRECUENCIA = "Horas";
-  noti.value.API_WHATSAPP = opt.value.API_WHATSAPP.find(
-    (el) => el.value == fila.API_WHATSAPP
-  );
   noti.value.CELULAR = fila.NUMERO;
   noti.value.EMAIL = fila.EMAIL;
   noti.value.SMS = fila.SMS;
   noti.value.WHATSAPP = fila.WHATSAPP;
   noti.value.CORREO = fila.CORREO;
+  noti.value.API_WHATSAPP = opt.value.API_WHATSAPP.find(
+    (el) => el.value == fila.API_WHATSAPP
+  );
+  noti.value.TIPOAVISO = opt.value.TIPOFRECUENCIA.find(
+    (el) => el.value == fila.TIPOAVISO
+  );
   notiDialog.value = true;
 };
 
