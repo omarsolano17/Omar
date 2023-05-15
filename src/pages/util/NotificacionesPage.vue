@@ -11,7 +11,7 @@
         :row_key="dtNOTI.row_key"
         :columnas_visibles="dtNOTI.columnas_visibles"
         :ordenarPor="dtNOTI.ordenarPor"
-        @fila="onSelect($event)"
+        @fila="crudNOTI('Editar', $event)"
         :dense="true"
         :condicion_adicional="whereNOTI"
         :columnas_filtro="dtNOTI.columnas_filtro"
@@ -56,7 +56,7 @@
       <q-card style="width: 90%; max-width: 90vw">
         <q-bar dark class="bg-secondary">
           <div class="col text-center text-weight-bold">
-            {{ noti?.PROCESO }} Notificacion
+            {{ noti?.PROCESO }} Notificacion {{ noti?.ID }}
           </div>
           <q-btn dense flat round icon="close" v-close-popup />
         </q-bar>
@@ -173,7 +173,7 @@
               outlined
               :disable="false"
               class="col-3 q-pa-xs"
-              :rules="[(val) => (val && val.length > 0) || 'Obligatorio']"
+              :rules="[(val) => (val && val > 0) || 'Obligatorio']"
             />
             <q-select
               v-model="noti.TIPOAVISO"
@@ -261,6 +261,7 @@ const opt = ref({
 });
 
 const noti = ref({
+  ID: null,
   PROCESO: "Insertar",
   FECHA_NOTIFICA: null,
   HORA_NOTIFICA: null,
@@ -281,16 +282,75 @@ const dtNOTI = ref({
   titulo: "Notificaciones",
   tabla: "NOTI",
   row_key: "ID",
-  ordenarPor: "ID DESC",
-  columnas_visibles: `ID, FECHA_REGISTRO, USUARIO_REGISTRO, FECHA_NOTIFICA, NOTIFICACION, SMS, WHATSAPP, CORREO`,
+  ordenarPor: "FECHA_NOTIFICA DESC",
+  columnas_visibles: `ID, FECHA_REGISTRO, USUARIO_REGISTRO, FECHA_NOTIFICA, NOTIFICACION, EMAIL,
+                      CORREO, NUMERO, AVISARDESDE, TIPOAVISO, API_WHATSAPP, ESTADO, SMS, WHATSAPP,
+                      CASE WHEN SMS=1 THEN 'SI' ELSE 'NO' END SMSNOTI,
+                      CASE WHEN WHATSAPP=1 THEN 'SI' ELSE 'NO' END WHATSAPPNOTI,
+                      CASE WHEN ESTADO=1 THEN 'FINALIZADO' ELSE 'PENDIENTE' END ESTADONOTI
+                      `,
   columnas: [
+    {
+      name: "ESTADONOTI",
+      required: true,
+      label: "Estado",
+      align: "left",
+      field: (row) => row.ESTADONOTI,
+      format: (val) => val,
+      sortable: true,
+    },
     {
       name: "FECHA_REGISTRO",
       required: true,
       label: "Fecha Ingresa",
       align: "left",
       field: (row) => row.FECHA_REGISTRO,
+      format: (val) => `${getFechaCorta(val)} ${getHora(val)}`,
+      sortable: true,
+    },
+    {
+      name: "FECHA_NOTIFICA",
+      required: true,
+      label: "Fecha de Notificacion",
+      align: "left",
+      field: (row) => row.FECHA_NOTIFICA,
+      format: (val) => `${getFechaCorta(val)} ${getHora(val)}`,
+      sortable: true,
+    },
+    {
+      name: "WHATSAPP",
+      required: true,
+      label: "Whatsapp?",
+      align: "left",
+      field: (row) => row.WHATSAPPNOTI,
       format: (val) => val,
+      sortable: true,
+    },
+    {
+      name: "SMS",
+      required: true,
+      label: "SMS Texto?",
+      align: "left",
+      field: (row) => row.SMSNOTI,
+      format: (val) => val,
+      sortable: true,
+    },
+    {
+      name: "NUMERO",
+      required: true,
+      label: "Numero",
+      align: "left",
+      field: (row) => row.NUMERO,
+      format: (val) => val,
+      sortable: true,
+    },
+    {
+      name: "AVISARDESDE",
+      required: true,
+      label: "Avisar",
+      align: "left",
+      field: (row) => row,
+      format: (val) => `${val.AVISARDESDE} ${val.TIPOAVISO} antes`,
       sortable: true,
     },
     {
@@ -302,15 +362,6 @@ const dtNOTI = ref({
       format: (val) => val,
       sortable: true,
     },
-    {
-      name: "FECHA_NOTIFICA",
-      required: true,
-      label: "Fecha de Notificacion",
-      align: "left",
-      field: (row) => row.FECHA_NOTIFICA,
-      format: (val) => val,
-      sortable: true,
-    },
   ],
   columnas_filtro: "NOTIFICACION",
 });
@@ -319,10 +370,13 @@ const onSelect = (fila) => {
   // console.log("omar:")
 };
 const crudNOTI = (mode, fila) => {
+  noti.value.PROCESO = mode;
   if (mode == "Insertar") {
-    noti.value.PROCESO = mode;
     onReset();
     notiDialog.value = true;
+  }
+  if (mode == "Editar" && fila.ESTADO != 1) {
+    llenarNOTI(fila);
   }
 };
 const onReset = () => {
@@ -335,6 +389,28 @@ const onReset = () => {
   );
   noti.value.FRECUENCIA = 1;
   noti.value.TIPOFRECUENCIA = "Horas";
+  onStore();
+};
+const llenarNOTI = (fila) => {
+  (noti.value.ID = fila.ID),
+    (noti.value.FECHA_NOTIFICA = getFechaCortaGringa(fila.FECHA_NOTIFICA));
+  noti.value.HORA_NOTIFICA = getHora(fila.FECHA_NOTIFICA);
+  noti.value.NOTIFICACION = fila.NOTIFICACION;
+  noti.value.AVISARDESDE = fila.AVISARDESDE;
+  noti.value.TIPOAVISO = opt.value.TIPOFRECUENCIA.find(
+    (el) => el.value == fila.TIPOAVISO
+  );
+  noti.value.FRECUENCIA = 1;
+  noti.value.TIPOFRECUENCIA = "Horas";
+  noti.value.API_WHATSAPP = opt.value.API_WHATSAPP.find(
+    (el) => el.value == fila.API_WHATSAPP
+  );
+  noti.value.CELULAR = fila.NUMERO;
+  noti.value.EMAIL = fila.EMAIL;
+  noti.value.SMS = fila.SMS;
+  noti.value.WHATSAPP = fila.WHATSAPP;
+  noti.value.CORREO = fila.CORREO;
+  notiDialog.value = true;
 };
 
 const onTakeCompletedNOTI = () => {
@@ -344,6 +420,7 @@ const onTakeCompletedNOTI = () => {
         MODELO: "NOTI",
         METODO: "CRUDNOTI",
         PARAMETROS: {
+          ID: noti.value.ID,
           PROCESO: noti.value.PROCESO,
           FECHA_NOTIFICA: noti.value.FECHA_NOTIFICA,
           HORA_NOTIFICA: noti.value.HORA_NOTIFICA,
@@ -422,6 +499,16 @@ const onValida = () => {
   }
   return true;
 };
+const onStore = () => {
+  noti.value.WHATSAPP = UtilidadStore.getNotificacion?.WHATSAPP || false;
+  noti.value.SMS = UtilidadStore.getNotificacion?.SMS || false;
+  noti.value.CORREO = UtilidadStore.getNotificacion?.CORREO || false;
+  noti.value.API_WHATSAPP = opt.value.API_WHATSAPP.find(
+    (el) => el.label == UtilidadStore.getNotificacion?.ENVIARDESDE || null
+  );
+  noti.value.EMAIL = SeguridadStore.getUsuario?.EMAIL;
+  noti.value.CELULAR = SeguridadStore.getUsuario?.CELULAR;
+};
 //end region
 
 //region Computed
@@ -441,14 +528,7 @@ const whereNOTI = computed(() => {
 
 //region Hooks
 onMounted(() => {
-  noti.value.WHATSAPP = UtilidadStore.getNotificacion?.WHATSAPP || false;
-  noti.value.SMS = UtilidadStore.getNotificacion?.SMS || false;
-  noti.value.CORREO = UtilidadStore.getNotificacion?.CORREO || false;
-  noti.value.API_WHATSAPP = opt.value.API_WHATSAPP.find(
-    (el) => el.label == UtilidadStore.getNotificacion?.ENVIARDESDE || null
-  );
-  noti.value.EMAIL = SeguridadStore.getUsuario?.EMAIL;
-  noti.value.CELULAR = SeguridadStore.getUsuario?.CELULAR;
+  onStore();
 });
 //end region
 </script>

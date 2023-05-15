@@ -55,7 +55,6 @@ BEGIN
 		PRINT 'LONGITUD DEL NUMERO <= 8'
 		RETURN
 	END
-  print 'whatsapp omar pasó linea 58'
   IF 1=2
   BEGIN
 	  SELECT @sUrl = REPLACE(@sUrl,'ENDPOINT',COALESCE(@ENDPOINT,'sendMessage'))
