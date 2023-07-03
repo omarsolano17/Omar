@@ -58,6 +58,11 @@ const routes = [
         component: () => import("pages/util/MemoriaPage.vue"),
         name: "util.memoria",
       },
+      {
+        path: "turnero",
+        component: () => import("pages/util/TurneroPage.vue"),
+        name: "util.turnero",
+      },
     ],
   },
   // Always leave this as last one,

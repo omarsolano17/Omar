@@ -1,22 +1,20 @@
 <template>
   <q-page class="q-pa-xs">
     <div class="row q-col-gutter-sm">
-      <!-- AQUI PAGE
-      <q-btn color="blue" @click="onBack" label="OMAR" /> -->
       <ServerSideTableComponent
-        ref="tableNOTI"
-        :titulo="dtNOTI.titulo"
-        :tabla="dtNOTI.tabla"
-        :columnas="dtNOTI.columnas"
-        :row_key="dtNOTI.row_key"
-        :columnas_visibles="dtNOTI.columnas_visibles"
-        :ordenarPor="dtNOTI.ordenarPor"
+        ref="tableTURNERO"
+        :titulo="dtTURNERO.titulo"
+        :tabla="dtTURNERO.tabla"
+        :columnas="dtTURNERO.columnas"
+        :row_key="dtTURNERO.row_key"
+        :columnas_visibles="dtTURNERO.columnas_visibles"
+        :ordenarPor="dtTURNERO.ordenarPor"
         @fila="crudNOTI('Editar', $event)"
         :dense="true"
-        :condicion_adicional="whereNOTI"
-        :columnas_filtro="dtNOTI.columnas_filtro"
-        :inner_join="dtNOTI.inner_join"
-        :left_join="dtNOTI.left_join"
+        :condicion_adicional="whereTURNERO"
+        :columnas_filtro="dtTURNERO.columnas_filtro"
+        :inner_join="dtTURNERO.inner_join"
+        :left_join="dtTURNERO.left_join"
         :permiteExportar="false"
         :permisoColumnas="false"
         colorSelect="green-2"
@@ -25,24 +23,6 @@
         :rows_per_page_options="[5, 10, 25, 50, 100]"
         :rowsPerPage="10"
       >
-        <template v-slot:seccion_superior_izquierda>
-          <q-btn
-            color="primary"
-            icon="add"
-            round
-            @click="crudNOTI('Insertar', '')"
-            size="sm"
-          >
-            <q-tooltip
-              class="bg-primary text-body2"
-              transition-show="flip-right"
-              transition-hide="flip-left"
-              :offset="[10, 10]"
-            >
-              Agregar Notificacion
-            </q-tooltip>
-          </q-btn>
-        </template>
       </ServerSideTableComponent>
     </div>
     <q-dialog
@@ -231,7 +211,6 @@ import { useFechas } from "boot/useFechas";
 //end region
 
 //region data
-const usuario = ref(null);
 const router = useRouter();
 const SeguridadStore = useSeguridadStore();
 const UtilidadStore = useUtilidadesStore();
@@ -279,118 +258,49 @@ const noti = ref({
   API_WHATSAPP: "",
 });
 
-const dtNOTI = ref({
+const dtTURNERO = ref({
   titulo: "Notificaciones",
-  tabla: "NOTI",
+  tabla: "TURNERO",
   row_key: "ID",
-  ordenarPor: "FECHA_NOTIFICA DESC",
-  columnas_visibles: `ID, FECHA_REGISTRO, USUARIO_REGISTRO, FECHA_NOTIFICA, NOTIFICACION, EMAIL,
-                      CORREO, NUMERO, AVISARDESDE, TIPOAVISO, API_WHATSAPP, ESTADO, SMS, WHATSAPP,
-                      CASE WHEN SMS=1 THEN 'SI' ELSE 'NO' END SMSNOTI,
-                      CASE WHEN WHATSAPP=1 THEN 'SI' ELSE 'NO' END WHATSAPPNOTI,
-                      CASE WHEN ESTADO=1 THEN 'FINALIZADO' ELSE 'PENDIENTE' END ESTADONOTI
+  ordenarPor: "FECHA_LLAMA DESC",
+  columnas_visibles: `ID, FECHA_LLAMA, AFI.NOMBREAFI
                       `,
   columnas: [
     {
-      name: "ESTADONOTI",
+      name: "ID",
       required: true,
-      label: "Estado",
+      label: "Id",
       align: "left",
-      field: (row) => row.ESTADONOTI,
+      field: (row) => row.ID,
       format: (val) => val,
       sortable: true,
     },
     {
-      name: "FECHA_REGISTRO",
+      name: "FECHA_LLAMA",
       required: true,
-      label: "Fecha Ingresa",
+      label: "Fecha llamado",
       align: "left",
-      field: (row) => row.FECHA_REGISTRO,
+      field: (row) => row.FECHA_LLAMA,
       format: (val) => `${getFechaCorta(val)} ${getHora(val)}`,
       sortable: true,
     },
     {
       name: "FECHA_NOTIFICA",
       required: true,
-      label: "Fecha de Notificacion",
+      label: "Paciente",
       align: "left",
-      field: (row) => row.FECHA_NOTIFICA,
-      format: (val) => `${getFechaCorta(val)} ${getHora(val)}`,
-      sortable: true,
-    },
-    {
-      name: "WHATSAPP",
-      required: true,
-      label: "Whatsapp?",
-      align: "left",
-      field: (row) => row.WHATSAPPNOTI,
-      format: (val) => val,
-      sortable: true,
-    },
-    {
-      name: "SMS",
-      required: true,
-      label: "SMS Texto?",
-      align: "left",
-      field: (row) => row.SMSNOTI,
-      format: (val) => val,
-      sortable: true,
-    },
-    {
-      name: "NUMERO",
-      required: true,
-      label: "Numero",
-      align: "left",
-      field: (row) => row.NUMERO,
-      format: (val) => val,
-      sortable: true,
-    },
-    {
-      name: "AVISARDESDE",
-      required: true,
-      label: "Avisar",
-      align: "left",
-      field: (row) => row,
-      format: (val) => `${val.AVISARDESDE} ${val.TIPOAVISO} antes`,
-      sortable: true,
-    },
-    {
-      name: "NOTIFICACION",
-      required: true,
-      label: "Notificacion",
-      align: "left",
-      field: (row) => row.NOTIFICACION,
+      field: (row) => row.NOMBREAFI,
       format: (val) => val,
       sortable: true,
     },
   ],
-  columnas_filtro: "NOTIFICACION",
+  columnas_filtro: "NOMBREAFI",
+  inner_join: ` CIT ON CIT.CONSECUTIVO=TURNERO.CONSECUTIVOCIT
+                LEFT JOIN AFI ON AFI.IDAFILIADO=CIT.IDAFILIADO`,
 });
 //region methods
 const onSelect = (fila) => {
   // console.log("omar:")
-};
-const crudNOTI = (mode, fila) => {
-  noti.value.PROCESO = mode;
-  if (mode == "Insertar") {
-    onReset();
-    notiDialog.value = true;
-  }
-  if (mode == "Editar" && fila.ESTADO != 1) {
-    llenarNOTI(fila);
-  }
-};
-const onReset = () => {
-  noti.value.FECHA_NOTIFICA = getDate("date");
-  noti.value.HORA_NOTIFICA = getDate("time");
-  noti.value.NOTIFICACION = null;
-  noti.value.AVISARDESDE = 1;
-  noti.value.TIPOAVISO = opt.value.TIPOFRECUENCIA.find(
-    (el) => el.value == "Dias"
-  );
-  noti.value.FRECUENCIA = 1;
-  noti.value.TIPOFRECUENCIA = "Horas";
-  onStore();
 };
 const llenarNOTI = (fila) => {
   noti.value.ID = fila.ID;
@@ -414,92 +324,6 @@ const llenarNOTI = (fila) => {
   notiDialog.value = true;
 };
 
-const onTakeCompletedNOTI = () => {
-  if (onValida()) {
-    appStore
-      .json({
-        MODELO: "NOTI",
-        METODO: "CRUDNOTI",
-        PARAMETROS: {
-          ID: noti.value.ID,
-          PROCESO: noti.value.PROCESO,
-          FECHA_NOTIFICA: noti.value.FECHA_NOTIFICA,
-          HORA_NOTIFICA: noti.value.HORA_NOTIFICA,
-          NOTIFICACION: noti.value.NOTIFICACION,
-          WHATSAPP: noti.value.WHATSAPP,
-          SMS: noti.value.SMS,
-          EMAIL: noti.value.EMAIL,
-          CELULAR: noti.value.CELULAR,
-          CORREO: noti.value.CORREO,
-          API_WHATSAPP: noti.value.API_WHATSAPP.value,
-          AVISARDESDE: noti.value.AVISARDESDE,
-          TIPOAVISO: noti.value.TIPOAVISO.value,
-        },
-      })
-      .then((res) => {
-        if (res.data.result.recordset[0].OK === "OK") {
-          $q.notify({
-            color: "positive",
-            message:
-              noti.value.PROCESO == "Insertar"
-                ? "Registro Insertado correctamente"
-                : "Registro Actualizado correctamente",
-            position: "top",
-            timeout: 200,
-          });
-          notiDialog.value = false;
-          UtilidadStore.setWhatsapp(noti.value.WHATSAPP);
-          UtilidadStore.setSms(noti.value.SMS);
-          UtilidadStore.setCorreo(noti.value.CORREO);
-          UtilidadStore.setEnviarDesde(noti.value.API_WHATSAPP.label);
-          setTimeout(() => {
-            tableNOTI.value.obligarRefrescar();
-          }, 200);
-        }
-      });
-  }
-};
-const onValida = () => {
-  if (
-    noti.value?.WHATSAPP == false &&
-    noti.value?.SMS == false &&
-    noti.value?.CORREO == false
-  ) {
-    $q.notify({
-      color: "negative",
-      message: "Debe seleccionar un metodo de notificacion",
-      position: "top",
-      timeout: 2000,
-    });
-    return false;
-  }
-  if (noti.value?.WHATSAPP || noti.value?.SMS) {
-    if (!noti.value.CELULAR || noti.value.CELULAR.length != 10) {
-      $q.notify({
-        color: "negative",
-        message: "Debe ingresar un numero de contacto valido",
-        position: "top",
-        timeout: 2000,
-      });
-      return false;
-    }
-  }
-  if (
-    noti.value?.CORREO &&
-    (noti.value?.EMAIL == "" ||
-      !noti.value?.EMAIL.includes("@") ||
-      !noti.value?.EMAIL.includes("."))
-  ) {
-    $q.notify({
-      color: "negative",
-      message: "Debe ingresar un correo valido",
-      position: "top",
-      timeout: 2000,
-    });
-    return false;
-  }
-  return true;
-};
 const onStore = () => {
   noti.value.WHATSAPP = UtilidadStore.getNotificacion?.WHATSAPP || false;
   noti.value.SMS = UtilidadStore.getNotificacion?.SMS || false;
@@ -509,14 +333,12 @@ const onStore = () => {
   );
   noti.value.EMAIL = SeguridadStore.getUsuario?.EMAIL;
   noti.value.CELULAR = SeguridadStore.getUsuario?.CELULAR;
-  usuario.value = SeguridadStore.getUsuario?.USUARIO;
 };
 //end region
 
 //region Computed
-const whereNOTI = computed(() => {
-  let cond = " 1 = 1";
-  cond = `USUARIO_REGISTRO='${usuario.value}'`;
+const whereTURNERO = computed(() => {
+  let cond = " TURNERO.ESTADO=0";
   return cond;
 });
 //end region
@@ -531,7 +353,7 @@ const whereNOTI = computed(() => {
 
 //region Hooks
 onMounted(() => {
-  onStore();
+  // onStore();
 });
 //end region
 </script>
