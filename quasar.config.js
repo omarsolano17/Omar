@@ -9,8 +9,9 @@
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
 const SOCKET_URL = "http";
-// const OSOLANO = "http://192.168.0.29:300102/";
-// const BASE_URL = OSOLANO;
+const OSOLANO = "http://190.145.19.14:3001/";
+const CLD = "http://190.145.19.14:3001/";
+const BASE_URL = OSOLANO;
 
 const { configure } = require("quasar/wrappers");
 const path = require("path");
@@ -68,7 +69,7 @@ module.exports = configure(function (/* ctx */) {
       // publicPath: '/',
       // analyze: true,
       env: {
-        // BASE_URL: BASE_URL + "api/",
+        BASE_URL: BASE_URL + "api/",
         SOCKET_URL: SOCKET_URL,
         USER_TEST: "OSOLANO",
         PASS_TEST: "OMAR2020",
