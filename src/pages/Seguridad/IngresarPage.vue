@@ -1,30 +1,14 @@
 <template>
-  <!-- <q-page
-    padding
-    v-bind:style="{ backgroundImage: 'url(' + image + ')' }"
-    style="background-size: cover; background-repeat: no-repeat"
-  > -->
-  <q-page class="bg-main">
-    omar
-    <div class="q-pa-md" style="height: 98vh">
-      <div class="row shadow-10" style="height: 102%">
-        <div
-          class="col-12 col-md-6 col-sm-6 flex flex-center bg-light large-screen-only"
-        >
-          <img alt="Omar logo" src="img/logo.png" />
-        </div>
-        <div class="col-12 col-md-6 col-sm-6 bg-form shadow-1">
-          <div
-            class="text-h2 text-black text-center bg-primary"
-            @keydown.esc="regresarAInicio"
-          >
-            <div class="q-pa-xl q-mb-xl text-bold btn-main text-white">
-              Ingresar a Solano Page
-            </div>
-          </div>
-          <div class="flex flex-center q-pt-xl" v-if="true">
+  <q-page class="bg-blue-3">
+    <div class="q-pa-md flex flex-center" style="height: 80vh">
+      <div
+        class="row shadow-5 rounded-borders bg-yellow-1"
+        style="height: 80%, width: 80%"
+      >
+        <div class="col-12 col-md-6 col-sm-6 shadow-1">
+          <div class="flex flex-center" v-if="true">
             <div
-              class="q-pa-md bg-light-blue-1 bg-transparent shadow-2 rounded-borders login-box"
+              class="q-pa-md shadow-2 rounded-borders login-box"
               v-if="identificado === 0"
             >
               <transition
@@ -75,8 +59,7 @@
                     lazy-rules
                     :rules="[
                       (val) =>
-                        (val && val.length > 0) ||
-                        this.$t('form.required_text'),
+                        (val && val.length > 0) || 'aqui el sms de error',
                     ]"
                     :loading="cargando"
                   />
@@ -208,6 +191,72 @@
             </div>
           </div>
         </div>
+        <div
+          class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only"
+        >
+          <div class="row col-12 text-center">
+            <span class="col-12 text-bold text-italic q-mb-lg"
+              >Bienvenido a nuestra Empresa</span
+            >
+            <span class="col-12 text-red text-bold q-mb-lg"
+              >Siguenos en nuestras Redes Sociales</span
+            >
+            <div class="col-12 text-center">
+              <q-btn
+                href="https://api.whatsapp.com/send/?phone=573205825363&text&type=phone_number&app_absent=0"
+                target="_blank"
+                size="lg"
+                icon="fa-brands fa-whatsapp"
+                round
+                color="white"
+                text-color="green"
+                class="q-pa-none q-ma-none"
+              >
+                <q-tooltip
+                  class="bg-green text-black"
+                  :offset="[10, 10]"
+                  transition-show="jump-down"
+                >
+                  Ir a WhatsApp
+                </q-tooltip>
+              </q-btn>
+              <q-btn
+                @click="onRedSocial('INSTAGRAM')"
+                size="lg"
+                icon="fa-brands fa-instagram"
+                round
+                color="white"
+                text-color="pink-5"
+                class="q-pa-none q-ml-md"
+              >
+                <q-tooltip
+                  class="bg-pink-5 text-black"
+                  :offset="[10, 10]"
+                  transition-show="jump-down"
+                >
+                  Ir a Instagram
+                </q-tooltip>
+              </q-btn>
+              <q-btn
+                @click="onRedSocial('FACEBOOK')"
+                size="lg"
+                icon="fa-brands fa-facebook"
+                round
+                color="white"
+                text-color="indigo"
+                class="q-pa-none q-ml-md"
+              >
+                <q-tooltip
+                  class="bg-indigo-4 text-black"
+                  :offset="[10, 10]"
+                  transition-show="jump-down"
+                >
+                  Ir a Facebook
+                </q-tooltip>
+              </q-btn>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </q-page>
@@ -288,6 +337,27 @@ export default {
     onReset() {
       this.usuario = null;
       this.compania = this.companiaFavorita;
+    },
+    onRedSocial(red) {
+      let url = "";
+      switch (red) {
+        case "WHATSAPP":
+          url =
+            "https://api.whatsapp.com/send/?phone=573205825363&text&type=phone_number&app_absent=0";
+          break;
+        case "INSTAGRAM":
+          url = "https://www.instagram.com/solanoomar82/";
+          break;
+        case "FACEBOOK":
+          url = "https://www.facebook.com/SOLANOOMAR82/";
+          break;
+        default:
+          url = "https://www.google.com/?hl=es";
+          break;
+      }
+      if (url !== "") {
+        window.open(url);
+      }
     },
     onSubmit() {
       this.cargando = true;
