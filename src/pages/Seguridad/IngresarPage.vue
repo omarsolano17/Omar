@@ -292,7 +292,7 @@ export default {
       this.usuario = process.env.USER_TEST;
       this.claveWeb = process.env.PASS_TEST;
     }
-    this.onReloadCompanias();
+    // this.onReloadCompanias();
     setTimeout(() => {
       if (this.jwt) {
         this.$router.push({ name: "home" });
