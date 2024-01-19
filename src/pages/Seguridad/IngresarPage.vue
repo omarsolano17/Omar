@@ -5,194 +5,61 @@
         class="row shadow-5 rounded-borders bg-yellow-1"
         style="height: 80%, width: 80%"
       >
-        <div class="col-12 col-md-6 col-sm-6 shadow-1">
-          <div class="flex flex-center" v-if="true">
-            <div
-              class="q-pa-md shadow-2 rounded-borders login-box"
-              v-if="identificado === 0"
-            >
-              <transition
-                appear
-                enter-active-class="animated bounceInLeft"
-                leave-active-class="animated bounceOutRight"
-              >
-                <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-xs">
-                  <q-select
-                    id="compania"
-                    ref="compania"
-                    filled
-                    v-model="compania"
-                    :options="companias"
-                    :label="$t('form.login.compania_label')"
-                    :loading="cargandoCompanias"
-                    option-label="RAZONSOCIAL"
-                    option-value="COMPANIA"
-                    :rules="[
-                      (val) =>
-                        (val && val.value != '') ||
-                        this.$t('form.required_option'),
-                    ]"
-                  >
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-italic text-grey">{{
-                          $t("form.no_option")
-                        }}</q-item-section>
-                      </q-item>
-                    </template>
-                    <template v-slot:append>
-                      <q-icon
-                        class="cursor-pointer"
-                        name="refresh"
-                        @click="onReloadCompanias"
-                      />
-                    </template>
-                  </q-select>
-                  <!-- {{compania}} -->
-                  <q-input
-                    id="usuario"
-                    ref="usuario"
-                    filled
-                    v-model="usuario"
-                    :label="$t('form.login.usuario_label')"
-                    :hint="$t('form.login.usuario_hint')"
-                    lazy-rules
-                    :rules="[
-                      (val) =>
-                        (val && val.length > 0) || 'aqui el sms de error',
-                    ]"
-                    :loading="cargando"
-                  />
-                  <!-- termina usuario -->
-                  <!-- empieza clave -->
-                  <q-input
-                    v-model="claveWeb"
-                    filled
-                    :type="isPwd ? 'password' : 'text'"
-                    :label="$t('form.login.clave_label')"
-                    :hint="$t('form.login.clave_hint')"
-                    ref="claveWeb"
-                    lazy-rules
-                  >
-                    <template v-slot:append>
-                      <q-icon
-                        :name="isPwd ? 'visibility_off' : 'visibility'"
-                        class="cursor-pointer"
-                        @click="isPwd = !isPwd"
-                      />
-                    </template>
-                  </q-input>
-                  <q-btn
-                    :label="$t('button.ingresar')"
-                    type="submit"
-                    color="primary"
-                    icon="lock_open"
-                    :loading="cargando"
-                    class="btn-main"
-                  />
-                  <!-- termina clave -->
-                  <div>
-                    <span class="text-bold text-orange-8"
-                      >v{{ $q.version }}</span
-                    >
-                  </div>
-                </q-form>
-              </transition>
+        <div class="col-12 col-md-6 col-sm-6 shadow-1 bg-red-1">
+          <div class="col-12 col-md-6 col-sm-6 bg-green text-center">
+            <span class="text-bold text-h5">Inicio de sesion</span>
+            <div v-if="false">
+              <div class="col-12">
+                <label> Usuario </label>
+                <input type="text" />
+              </div>
+              <div class="col-12">
+                <label> Contraseña </label>
+                <input type="password" />
+              </div>
+              <div>
+                <button>Enviar</button>
+              </div>
             </div>
-            <div
-              class="q-pa-md bg-light-blue-1 bg-transparent shadow-2 rounded-borders login-box"
-              v-else-if="identificado === 1"
-            >
-              <transition
-                appear
-                enter-active-class="animated bounceInLeft"
-                leave-active-class="animated bounceOutRight"
-              >
-                <div @keydown.esc="regresarAInicio">
-                  <div class="text-h4 text-italic text-indigo" v-if="nombre">
-                    {{ nombre }}
-                  </div>
-                  <q-form @submit="onConfigurar" class="q-gutter-md">
-                    <!-- <q-input
-                      type="password"
-                      autocomplete="new-password"
-                      id="claveKrystalos"
-                      ref="claveKrystalos"
-                      filled
-                      v-model="claveKrystalos"
-                      :label="$t('form.login.clave_krystalos_label')"
-                      :hint="$t('form.login.clave_krystalos_hint')"
-                      lazy-rules
-                      :rules="[
-                        (val) =>
-                          (val && val.length > 0) ||
-                          this.$t('form.required_text'),
-                      ]"
-                    /> -->
-                    <q-input
-                      type="password"
-                      autocomplete="new-password"
-                      id="claveWeb"
-                      ref="claveWeb"
-                      filled
-                      v-model="claveWeb"
-                      :label="$t('form.login.nueva_clave_label')"
-                      :hint="$t('form.login.nueva_clave_hint')"
-                      lazy-rules
-                      :rules="[
-                        (val) =>
-                          (val && val.length > 0) ||
-                          this.$t('form.required_text'),
-                      ]"
-                    />
-                    <q-input
-                      type="password"
-                      autocomplete="new-password"
-                      id="claveWeb2"
-                      ref="claveWeb2"
-                      filled
-                      v-model="claveWeb2"
-                      :label="$t('form.login.nueva_calve2_label')"
-                      :hint="$t('form.login.nueva_calve2_hint')"
-                      lazy-rules
-                      :rules="[
-                        (val) =>
-                          (val && val.length > 0) ||
-                          this.$t('form.required_text'),
-                        (val) =>
-                          (val && val == this.claveWeb) ||
-                          'La Clave debe Coincidir',
-                      ]"
-                    />
-                    <div>
-                      <q-btn
-                        :label="$t('button.cancelar')"
-                        color="negative"
-                        icon="subdirectory_arrow_left"
-                        @click="
-                          claveKrystalos = claveWeb = claveWeb2 = null;
-                          identificado = 0;
-                        "
-                        :disable="cargando"
-                        class="btn-cancel"
-                      />&nbsp;
-                      <q-btn
-                        :label="$t('button.registrar')"
-                        type="submit"
-                        color="primary"
-                        icon="send"
-                        :loading="cargando"
-                        class="btn-main"
-                      />
-                    </div>
-                  </q-form>
-                </div>
-              </transition>
+
+            <!-- q
+            m-p
+            t r l b a
+            xs sm md lg xl -->
+            <div class="row col-12 bg-yellow-2 q-pa-xs flex-center">
+              <q-input
+                class="col-7 bg-red-2 q-my-xs"
+                outlined
+                label="Usuario"
+                v-model="user"
+                dense
+              />
+              <q-input
+                class="col-7 bg-red-2 q-my-sm"
+                outlined
+                label="Clave"
+                type="password"
+                v-model="pass"
+                autofocus
+                dense
+              />
+              <div class="col-12">
+                <q-btn
+                  label="Ingresar"
+                  no-caps
+                  size="md"
+                  color="green-5"
+                  rounded
+                  text-color="black"
+                  @click="onLoginUsuario()"
+                />
+              </div>
             </div>
+            {{ user }} {{ pass }}
           </div>
         </div>
         <div
-          class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only"
+          class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only bg-blue"
         >
           <div class="row col-12 text-center">
             <span class="col-12 text-bold text-italic q-mb-lg"
@@ -283,6 +150,9 @@ export default {
       isPwd: true,
       nombre: null,
       cargandoCompanias: false,
+      user: null,
+      pass: null,
+      isHover: false,
     };
   },
   mounted() {
