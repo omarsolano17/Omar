@@ -21,7 +21,7 @@
         <!-- <CambioDatosUsuario :usuario="usuario" /> -->
         <q-separator spaced inset vertical dark />
         <div class="q-pr-md">
-          {{ usuario.NOMBRE || "" }} - {{ usuario.DB_NAME || "" }}
+          {{ usuario?.NOMBRE || "" }} - {{ usuario?.DB_NAME || "" }}
         </div>
         <q-btn color="primary" icon="logout" round @click="onLogout">
           <q-tooltip
