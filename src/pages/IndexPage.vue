@@ -1,73 +1,69 @@
 <template>
-  <q-page class="q-pt-xs">
-    <div class="row q-col-gutter-sm">
+  <q-page>
+    <div class="row q-col-gutter-xs">
       <div class="col-12">
-        <q-card flat>
-          <q-item>
-            <q-item-section avatar class="large-screen-only">
-              <q-avatar>
-                <q-icon name="home"></q-icon>
-              </q-avatar>
-            </q-item-section>
-            <q-item-section class="large-screen-only">
-              <q-item-label>Central Solano</q-item-label>
-              <q-item-label caption>
-                Acceso a los módulos de la plataforma
-              </q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-input
-                filled
-                v-model="filter"
-                dense
-                label="Buscar"
-                ref="buscarRef"
-              >
-                <template v-slot:append>
-                  <q-icon
-                    v-if="filter !== ''"
-                    name="close"
-                    @click="filter = ''"
-                    class="cursor-pointer"
-                  />
-                  <q-icon name="search" />
-                </template>
-              </q-input>
+        <!-- <q-card flat> -->
+        <q-item v-if="false">
+          <q-item-section avatar class="large-screen-only">
+            <q-icon name="home"></q-icon>
+          </q-item-section>
+          <q-item-section side>
+            <q-input
+              filled
+              v-model="filter"
+              dense
+              label="Buscar"
+              ref="buscarRef"
+            >
+              <template v-slot:append>
+                <q-icon
+                  v-if="filter !== ''"
+                  name="close"
+                  @click="filter = ''"
+                  class="cursor-pointer"
+                />
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </q-item-section>
+        </q-item>
+        <q-separator />
+        <!-- {{menus}} -->
+        <q-card-section
+          v-show="menus.length > 0"
+          flat
+          class="q-pa-none q-ma-none"
+        >
+          <q-item dense class="q-px-xs q-py-xs q-ma-none">
+            <q-item-section v-if="true">
+              <div class="row q-col-gutter-lg q-pa-none q-ma-none">
+                <q-item
+                  clickable
+                  :to="{ name: item.to }"
+                  class="col-lg-3 col-md-3 col-xs-6 col-sm-4 q-pa-none q-ma-none"
+                  v-for="(item, i) in menus"
+                  :key="i"
+                >
+                  <q-item-section avatar>
+                    <q-avatar
+                      rounded
+                      color="blue-6"
+                      text-color="white"
+                      :icon="item.icon"
+                    />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ item.title }}</q-item-label>
+                    <q-item-label caption>
+                      {{ item.caption }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </div>
             </q-item-section>
           </q-item>
-          <q-separator />
-          <!-- {{menus}} -->
-          <q-card-section v-show="menus.length > 0">
-            <q-item dense>
-              <q-item-section>
-                <div class="row q-col-gutter-lg">
-                  <div
-                    class="col-lg-3 col-md-3 col-xs-6 col-sm-4"
-                    v-for="(item, i) in menus"
-                    :key="i"
-                  >
-                    <q-item clickable :to="{ name: item.to }">
-                      <q-item-section avatar>
-                        <q-avatar
-                          rounded
-                          color="blue-grey"
-                          text-color="white"
-                          :icon="item.icon"
-                        />
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label>{{ item.title }}</q-item-label>
-                        <q-item-label caption>
-                          {{ item.caption }}
-                        </q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </div>
-                </div>
-              </q-item-section>
-            </q-item>
-          </q-card-section>
-        </q-card>
+        </q-card-section>
+        <!-- </q-card> -->
       </div>
     </div>
   </q-page>

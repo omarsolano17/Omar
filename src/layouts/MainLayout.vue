@@ -16,8 +16,8 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-        <q-toolbar-title> Solano Enterprise </q-toolbar-title>
-        <!-- <div>(Quasar v{{ $q.version }})&nbsp;</div> -->
+        <q-toolbar-title> Solano Enterprise - Menu Central</q-toolbar-title>
+        <div>(Quasar v{{ $q.version }})&nbsp;</div>
         <!-- <CambioDatosUsuario :usuario="usuario" /> -->
         <q-separator spaced inset vertical dark />
         <div class="q-pr-md">
@@ -57,7 +57,6 @@
         />
       </q-list>
     </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -213,6 +212,7 @@ const onLogout = () => {
     message: "Cerrando sesión...",
   });
   authStore.setJWT(null);
+  $q.loading.hide();
 };
 //#endregion
 </script>
