@@ -8,14 +8,12 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-const SOCKET_URL = "http";
-const OSOLANO = "http://190.145.19.14:3001/";
-const CLD = "http://190.145.19.14:3001/";
-const BASE_URL = OSOLANO;
-
 const { configure } = require("quasar/wrappers");
 const path = require("path");
-
+const env = require("quasar-dotenv").config({
+  path: ".env." + process.env.NODE_ENV,
+  encoding: "utf8",
+});
 module.exports = configure(function (/* ctx */) {
   return {
     eslint: {
@@ -68,12 +66,13 @@ module.exports = configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      env: {
-        BASE_URL: BASE_URL + "api/",
-        SOCKET_URL: SOCKET_URL,
-        USER_TEST: "OSOLANO",
-        PASS_TEST: "OMAR2020",
-      },
+      env: env,
+      // env: {
+      //   BASE_URL: BASE_URL + "api/",
+      //   SOCKET_URL: SOCKET_URL,
+      //   USER_TEST: "OSOLANO",
+      //   PASS_TEST: "OMAR2020",
+      // },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

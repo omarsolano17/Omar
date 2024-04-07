@@ -174,8 +174,8 @@ import { useRouter } from "vue-router";
 //#endregion
 
 //#region DATA
-const cia = ref("98");
 const seguridadStore = useSeguridadStore();
+const cia = ref("98");
 const $q = useQuasar();
 const user = ref("OSOLANO");
 const pass = ref("OMAR2020");
