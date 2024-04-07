@@ -47,6 +47,7 @@ const routes = [
         path: "",
         component: () => import("pages/util/IndexPage.vue"),
         name: "util",
+        meta: { requiresAuth: true },
       },
       {
         path: "notificaciones",

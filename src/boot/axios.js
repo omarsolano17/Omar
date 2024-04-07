@@ -11,7 +11,7 @@ import { useAppStore } from "src/stores/app";
 // "export default () => {}" function below (which runs individually
 // for each client)
 // const api = axios.create({ baseURL: 'https://api.example.com' })
-const api = axios.create({ baseURL: process.env.BASE_URL });
+const api = axios.create({ baseURL: JSON.parse(process.env.BASE_URL) });
 
 // #region interceptar las Respuestas
 api.interceptors.response.use(
