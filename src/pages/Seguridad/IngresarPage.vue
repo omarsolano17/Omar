@@ -1,14 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <q-page class="bg-blue-3">
-    <div class="q-pa-md flex flex-center" style="height: 80vh">
-      <div
-        class="row shadow-5 rounded-borders bg-yellow-1"
-        style="height: 80%, width: 80%"
-      >
-        <div class="col-12 col-md-6 col-sm-6 shadow-1 flex flex-center">
-          omar tu papi
-=======
   <q-page class="bg-main">
     <div class="q-pa-md flex flex-center" style="height: 100vh">
       <div class="row shadow-5 rounded-borders bg-yellow-1" style="height: 60%">
@@ -95,7 +85,6 @@
             </div>
             {{ userCompleto }}
           </div>
->>>>>>> d168cd5f82cf77ed4d52b13cf4c6c6ede3d82c1b
         </div>
         <div
           class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only bg-blue-4"
