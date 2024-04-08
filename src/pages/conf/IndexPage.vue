@@ -10,7 +10,6 @@
               </q-avatar>
             </q-item-section>
             <q-item-section class="large-screen-only">
-              <q-item-label>Central Solano</q-item-label>
               <q-item-label caption>
                 Acceso a los módulos de configuracion
               </q-item-label>
