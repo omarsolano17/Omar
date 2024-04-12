@@ -96,7 +96,6 @@
           />
         </div>
         {{ usgru }}
-        <!-- @todo Usuario arriba -->
       </q-card-section>
       <q-card-actions align="right">
         <q-btn flat label="Cancelar" color="secondary" v-close-popup />

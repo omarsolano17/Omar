@@ -5,7 +5,6 @@
         <div
           class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only bg-form"
         >
-          <!-- @todo arriba -->
           <div class="text-center text-white">
             <span class="text-bold text-h5 col-12">Inicio de sesion</span>
             <div v-if="false">
@@ -259,7 +258,6 @@ onMounted(() => {
 }
 .bg-form {
   /* background-color: #F5F5F5; */
-  /* @todo abajo */
   background: linear-gradient(
     300deg,
     rgba(31, 53, 55, 0.8) 10%,

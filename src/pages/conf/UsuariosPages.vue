@@ -57,15 +57,7 @@
         </q-bar>
         <q-card-section class="row items-center">
           <div class="row col-12">
-            <q-input
-              dense
-              class="q-pa-xs col-3"
-              v-model="ususu.USUARIO"
-              type="text"
-              outlined
-              label="Usuario"
-              :disable="ususu.METODO !== 'INSERTAR'"
-            />
+            <q-input dense class="q-pa-xs col-3" v-model="ususu.USUARIO" type="text" outlined label="Usuario" :disable="ususu.METODO !== 'INSERTAR'"/>
             <q-input
               dense
               class="q-pa-xs col-6"
@@ -181,12 +173,8 @@
               :lazy-rules="true"
               :reactive-rules="true"
             />
-            <!-- ususu.grupo.value -->
-
-            <!-- </q-select> -->
           </div>
           {{ ususu }}
-          <!-- @todo Usuario arriba -->
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="secondary" v-close-popup />
