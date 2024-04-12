@@ -37,6 +37,11 @@ const routes = [
         component: () => import("pages/conf/GruposPages.vue"),
         name: "conf.grupos",
       },
+      {
+        path: "usuarios",
+        component: () => import("pages/conf/UsuariosPages.vue"),
+        name: "conf.usuarios",
+      },
     ],
   },
   {
