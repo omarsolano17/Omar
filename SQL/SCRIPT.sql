@@ -81,3 +81,55 @@ BEGIN
       ,ESTADO DATETIME
       )
 END
+
+
+IF NOT EXISTS (SELECT * FROM SYS.sysobjects WHERE type='U' AND NAME='SED')
+BEGIN
+	CREATE TABLE [dbo].[SED](
+		[IDSEDE] [varchar](5) NOT NULL,
+		[DESCRIPCION] [varchar](250) NULL,
+		[DIRECCION] [varchar](60) NULL,
+		[TELEFONOS] [varchar](35) NULL,
+		[CIUDAD] [varchar](5) NULL,
+	 CONSTRAINT [SEDIDSEDE] PRIMARY KEY CLUSTERED
+	(
+		[IDSEDE] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+	) ON [PRIMARY]
+END
+
+
+IF NOT EXISTS(SELECT 1 FROM sys.sysobjects WHERE type='U' AND name='UBEQ')
+BEGIN
+	CREATE TABLE [dbo].[UBEQ](
+		[COMPANIA] [varchar](2) NULL,
+		[ComputerName] [varchar](254) NOT NULL,
+		[Descripcion] [varchar](254) NOT NULL,
+		[IDAREA] [varchar](20) NULL,
+		[CCOSTO] [varchar](20) NULL,
+		[SUBCCOSTO] [varchar](4) NULL,
+		[ESCAJA] [smallint] NULL,
+		[CAJA] [varchar](4) NULL,
+		[TIPOMANEJOBODEGA] [varchar](20) NULL,
+		[MBODEGA] [smallint] NULL,
+		[IDBODEGA] [varchar](20) NULL,
+		[IDBODEGA2] [varchar](20) NULL,
+		[IDBODEGANOCHE] [varchar](20) NULL,
+		[IDSEDE] [varchar](5) NULL,
+		[TIPOIMPRESORA] [varchar](10) NULL,
+		[IDAREAH] [varchar](20) NULL,
+		[MCAJAPREFIJO] [smallint] NULL,
+		[CAJAENVIO] [varchar](4) NULL,
+		[IDBODEGACONSUMO] [varchar](20) NULL,
+		[CODUNG] [varchar](5) NULL,
+		[MCAJAENVIO] [smallint] NULL,
+		[ESCAJAMENOR] [smallint] NULL,
+		[CODCAJAMENOR] [varchar](4) NULL,
+		[F_VERSION] [date] NULL,
+	 CONSTRAINT [UBEQCOMPUTERNAME] PRIMARY KEY CLUSTERED
+	(
+		[ComputerName] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+	) ON [PRIMARY]
+END
+

@@ -23,7 +23,7 @@
         flat
         :rows_per_page_options="[5, 10, 25, 50, 100]"
         :rowsPerPage="10"
-        @evento_generico="onSelectUsusu($event)"
+        @evento_generico="onUSUSU($event, $event)"
         @fila="onSelectUsusu($event)"
       >
         <!-- @fila="onSelectUsusu($event)" -->
@@ -48,7 +48,6 @@
         </template>
       </ServerSideTableComponent>
     </div>
-    {{ optGrupo }}
     <q-dialog v-model="dgUsusu" persistent>
       <q-card style="width: 70%; max-width: 95%">
         <q-bar class="text-white bg-primary">
@@ -60,24 +59,27 @@
           <div class="row col-12">
             <q-input
               dense
-              class="q-pa-xs bg-red-2 col-3"
+              class="q-pa-xs col-3"
               v-model="ususu.USUARIO"
               type="text"
+              outlined
               label="Usuario"
               :disable="ususu.METODO !== 'INSERTAR'"
             />
             <q-input
               dense
-              class="q-pa-xs bg-yellow-2 col-9"
+              class="q-pa-xs col-6"
               v-model="ususu.NOMBRE"
               type="text"
+              outlined
               label="Nombre de usuario"
             />
             <q-input
               dense
-              class="col-7 q-my-sm shadow-6"
+              class="col-3 q-pa-xs"
               v-model="ususu.CLAVE"
               :type="typePass"
+              outlined
               label="Clave"
             >
               <template v-slot:append>
@@ -109,13 +111,78 @@
               dense
               emit-value
               map-options
-              :options="optGrupo"
+              :options="opt.grupo"
               clr
               label="Grupo"
             />
+            <q-select
+              class="col-4 q-pa-xs"
+              v-model="ususu.IDSEDE"
+              outlined
+              dense
+              emit-value
+              map-options
+              :options="opt.sede"
+              clr
+              label="Sede"
+            />
+            <q-select
+              class="col-4 q-pa-xs"
+              v-model="ususu.SYS_ComputerName"
+              outlined
+              dense
+              emit-value
+              map-options
+              :options="opt.computername"
+              clr
+              label="ComputerName"
+            />
+            <q-select
+              class="col-2 q-pa-xs"
+              v-model="ususu.ESTADO"
+              outlined
+              dense
+              emit-value
+              map-options
+              :options="opt.estado"
+              clr
+              label="Estado"
+            />
+            <q-input
+              dense
+              class="q-pa-xs col-3"
+              outlined
+              v-model="ususu.CARGO"
+              type="text"
+              label="Cargo"
+            />
+            <q-input
+              dense
+              class="q-pa-xs col-2"
+              outlined
+              v-model="ususu.CELULAR"
+              type="number"
+              label="Celular"
+              :maxlength="10"
+              :rules="[
+                (val) =>
+                  (+val?.length === 10 &&
+                    val?.toString()?.substring(0, 1) == '3') ||
+                  'Numero de celular incorrecto',
+              ]"
+            />
+            <q-input
+              dense
+              class="q-pa-xs col-5"
+              outlined
+              v-model="ususu.EMAIL"
+              type="email"
+              label="Correo"
+              :lazy-rules="true"
+              :reactive-rules="true"
+            />
             <!-- ususu.grupo.value -->
 
-            <!-- <q-select v-model="ususu.GRUPO" dense :options="optGrupo"> -->
             <!-- </q-select> -->
           </div>
           {{ ususu }}
@@ -151,7 +218,15 @@ const SeguridadStore = useSeguridadStore();
 const appStore = useAppStore();
 const usuarioSelected = ref(null);
 const ususu = ref({});
-const optGrupo = ref([]);
+const opt = ref({
+  estado: [
+    { value: "Activo", label: "Activo" },
+    { value: "Inactivo", label: "Inactivo" },
+  ],
+  grupo: [],
+  sede: [],
+  computername: [],
+});
 const dgUsusu = ref(false);
 const typePass = ref(null);
 const tableUSUSUref = ref(null);
@@ -216,10 +291,35 @@ const onSelectUsusu = (fila) => {
 };
 
 const onUSUSU = (metodo, fila) => {
+  if (typeof metodo === "object") {
+    metodo = metodo?.evento;
+    fila = fila?.data;
+  }
+  console.log(metodo);
+  console.log(fila);
   if (metodo === "NUEVO") {
     ususu.value = {};
     ususu.value.METODO = "INSERTAR";
+    ususu.value.ESTADO = "Activo";
     dgUsusu.value = true;
+  } else if (metodo === "UPDATE") {
+    ususu.value = { ...fila };
+    ususu.value.METODO = "EDITAR";
+    dgUsusu.value = true;
+  } else if (metodo === "INSERTAR" || metodo === "EDITAR") {
+    appStore
+      .json({
+        MODELO: "USUSU",
+        METODO: metodo,
+        PARAMETROS: { USUSU: ususu.value },
+      })
+      .then((res) => {
+        if (res.data.result.recordsets[0][0].OK === "OK") {
+          ususu.value = null;
+          dgUsusu.value = false;
+          tableUSUSUref.value.obligarRefrescar();
+        }
+      });
   }
 };
 
@@ -316,8 +416,25 @@ onMounted(() => {
       PARAMETROS: { WHERE: "" },
     })
     .then((res) => {
-      if (res.data.result.recordsets[0][0].OK === "OK")
-        optGrupo.value = res.data.result.recordsets[1];
+      opt.value.grupo = res.data.result.recordsets[0];
+    });
+  appStore
+    .json({
+      MODELO: "SEL",
+      METODO: "SED",
+      PARAMETROS: { WHERE: "" },
+    })
+    .then((res) => {
+      opt.value.sede = res.data.result.recordsets[0];
+    });
+  appStore
+    .json({
+      MODELO: "SEL",
+      METODO: "UBEQ",
+      PARAMETROS: { WHERE: "" },
+    })
+    .then((res) => {
+      opt.value.computername = res.data.result.recordsets[0];
     });
 });
 //#endregion
