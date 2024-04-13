@@ -42,18 +42,20 @@
               <span class="row col-12 text-bold text-italic q-ma-none q-mb-lg text-h5">Bienvenido a Solano</span>
               <span class="col-12 text-black text-bold">Siguenos en nuestras Redes Sociales</span>
               <div class="col-12 text-center q-mt-md">
-                <q-btn href="https://api.whatsapp.com/send/?phone=573205825363&text&type=phone_number&app_absent=0" target="_blank" size="lg"
+                <q-btn :href="`https://api.whatsapp.com/send/?phone=${whatsapp}&text&type=phone_number&app_absent=0`" target="_blank" size="lg"
                   icon="fa-brands fa-whatsapp" round color="white" text-color="green" class="q-pa-none q-ma-none bg-btn">
                   <q-tooltip class="bg-green text-black" :offset="[10, 10]" transition-show="jump-down">
                     Ir a WhatsApp
                   </q-tooltip>
                 </q-btn>
-                <q-btn @click="onRedSocial('INSTAGRAM')" size="lg" icon="fa-brands fa-instagram" round color="white" text-color="pink-5" class="q-pa-none q-ml-md bg-btn">
+                <q-btn :href="`https://www.instagram.com/${instagram}/`" target="_blank" size="lg" 
+                  icon="fa-brands fa-instagram" round color="white" text-color="pink-5" class="q-pa-none q-ml-md bg-btn">
                   <q-tooltip class="bg-pink-5 text-black" :offset="[10, 10]" transition-show="jump-down">
                     Ir a Instagram
                   </q-tooltip>
                 </q-btn>
-                <q-btn @click="onRedSocial('FACEBOOK')" size="lg" icon="fa-brands fa-facebook" round color="white" text-color="indigo" class="q-pa-none q-ml-md bg-btn">
+                <q-btn :href="`https://www.facebook.com/${facebook}/`" target="_blank" size="lg"
+                  icon="fa-brands fa-facebook" round color="white" text-color="indigo" class="q-pa-none q-ml-md bg-btn">
                   <q-tooltip class="bg-indigo-4 text-black" :offset="[10, 10]" transition-show="jump-down">
                     Ir a Facebook
                   </q-tooltip>
@@ -69,17 +71,12 @@
 
 <script setup>
 //#region IMPORTS
-// import { useFechas } from "src/boot/useFechas";
 import { useSeguridadStore } from "src/stores/seguridad";
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useAppStore } from "src/stores/app";
-import { date, uid, useQuasar, QSpinnerGears, getCssVar } from "quasar";
+import { useQuasar, date, uid, QSpinnerGears, getCssVar } from "quasar";
 import { useRouter } from "vue-router";
-
-// import { setClipboard, isJson } from "src/boot/helper";
-// import { toCurrency } from "src/boot/helper";
 //#endregion
-
 //#region DATA
 const seguridadStore = useSeguridadStore();
 const $q = useQuasar();
@@ -87,10 +84,13 @@ const cia = ref("98");
 const user = ref(null);
 const pass = ref(null);
 const userCompleto = ref(null);
+const whatsapp = ref('573205825363');
+const instagram = ref('solanoomar82');
+const facebook = ref('solano.omar');
 const typePass = ref("password");
 const router = useRouter();
-// //#endregion
-//#region Methods
+//#endregion
+//#region METHODS
 const onIngresar = () => {
   seguridadStore
     .ingresar(cia.value, user.value, pass.value)
@@ -100,7 +100,8 @@ const onIngresar = () => {
         let jwt = res.data.jwt;
         seguridadStore.setJWT(jwt);
         seguridadStore.setUsuario(userCompleto.value);
-        router.push({ name: "home" });
+        if (process.env.IS_SMS || process.env.IS_SMS==='true') router.push({ name: "sms" });
+        else router.push({ name: "home" });
       } else {
         $q.notify({
           color: "red",
@@ -114,31 +115,21 @@ const onIngresar = () => {
     .catch((e) => {});
 };
 //#endregion
-//#region Computed
+//#region COMPUTED
 const nombrecompelto = computed(() => {
-  let r = "";
-  return r;
+  return '';
 });
 //#endregion
-
 //#region WATCH
 // watch(nombrecompelto, (newWhere, oldWhere) => {
-//   clearTimeout(timeout.value)
-//     timeout.value =
-//       setTimeout(() => {
-//         onClear()
-//         tablaHPRE?.value?.requestServerInteraction();
-//       }, 1000);
 // });
 //#endregion
-
-//#region Hooks
+//#region HOOKS
 onMounted(() => {
   if (process.env.DEV) {
       user.value = JSON.parse(process?.env?.USER_TEST || null) || 'OSOLANO';
       pass.value = JSON.parse(process?.env?.PASS_TEST || null) || 'OMAR2020';
   }
-  // onRequest();
 });
 //#endregion
 </script>

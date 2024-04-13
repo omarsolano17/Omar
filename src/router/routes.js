@@ -86,7 +86,7 @@ const routes = [
       {
         path: "",
         component: () => import("pages/Mensajes/IndexPage.vue"),
-        name: "util",
+        name: "sms",
         meta: { requiresAuth: true },
       },
     ],
