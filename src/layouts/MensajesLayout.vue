@@ -17,11 +17,9 @@
           @click="toggleLeftDrawer"
         />
         <q-toolbar-title> Solano Enterprise </q-toolbar-title>
-        <!-- <div>(Quasar v{{ $q.version }})&nbsp;</div> -->
-        <!-- <CambioDatosUsuario :usuario="usuario" /> -->
         <q-separator spaced inset vertical dark />
         <div class="q-pr-md">
-          {{ usuario?.NOMBRE || "" }} - {{ usuario?.DB_NAME || "" }}
+          {{ usuario.NOMBRE || "" }} - {{ usuario.DB_NAME || "" }}
         </div>
         <q-btn color="primary" icon="logout" round @click="onLogout">
           <q-tooltip
@@ -44,7 +42,7 @@
     >
       <q-list>
         <EssentialLink
-          v-for="link in appStore.menuUtilidades"
+          v-for="link in appStore.menuConfiguracion"
           :key="link.title"
           v-bind="link"
         />
@@ -93,7 +91,7 @@ const $q = useQuasar();
 
 //#region Hooks
 onMounted(() => {
-  menu.value = appStore.getMenuUtilidades;
+  menu.value = appStore.getMenu;
   guardarPreferencias.value = false;
   leftDrawerOpen.value = appStore.getLeftDrawerOpen;
   lockMiniState.value = appStore.getLockMiniState;
@@ -103,8 +101,9 @@ onMounted(() => {
   //   appStore.setColor("primary", "#F77E4F");
   //   appStore.setColor("secondary", "#0f60b5");
   // }, 200);
+
   setTimeout(() => {
-    const menu = appStore.menuUtilidades;
+    const menu = appStore.menuConfiguracion;
     if (
       menu.length <= 0 ||
       (menu.agrupados?.length <= 0 &&
@@ -116,7 +115,7 @@ onMounted(() => {
         message: "Cargando menú...",
       });
       appStore
-        .json({ MODELO: "MENUQ_COL", METODO: "UTILIDADES" })
+        .json({ MODELO: "MENUQ_COL", METODO: "CONFIGURACION" })
         .then((res) => {
           if (res.data.res === "ok") {
             res.data.result.recordsets[3].forEach((el) => {
@@ -129,7 +128,7 @@ onMounted(() => {
             });
 
             appStore.setMenu({
-              modulo: "utilidades",
+              modulo: "configuracion",
               menu: essentialLinks,
             });
           }
@@ -212,8 +211,7 @@ const onLogout = () => {
   $q.loading.show({
     message: "Cerrando sesión...",
   });
-  authStore.setJWT(null);  
-  $q.loading.hide();
+  authStore.setJWT(null);
 };
 //#endregion
 </script>

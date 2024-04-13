@@ -2,9 +2,7 @@
   <q-page class="bg-main">
     <div class="q-pa-md flex flex-center" style="height: 100vh">
       <div class="row shadow-5 rounded-borders bg-yellow-1" style="height: 60%">
-        <div
-          class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only bg-form"
-        >
+        <div class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only bg-form">
           <div class="text-center text-white">
             <span class="text-bold text-h5 col-12">Inicio de sesion</span>
             <div v-if="false">
@@ -21,132 +19,42 @@
               </div>
             </div>
             <div class="row col-12 q-pa-xs flex flex-center q-mb-sm q-mt-sm">
-              <q-input
-                class="col-7 q-my-xs shadow-6"
-                outlined
-                label="Usuario"
-                v-model="user"
-                dense
-                shadow-text
-                color="white"
-                input-class="text-white"
-              />
-              <q-input
-                class="col-7 q-my-sm shadow-6"
-                outlined
-                label="Clave"
-                :type="typePass"
-                v-model="pass"
-                autofocus
-                color="white"
-                input-class="text-white"
-                dense
-              >
+              <q-input class="col-7 q-my-xs shadow-6" outlined label="Usuario" v-model="user" dense shadow-text color="white" input-class="text-white"/>
+              <q-input class="col-7 q-my-sm shadow-6" outlined label="Clave" :type="typePass" v-model="pass" color="white" input-class="text-white" dense>
                 <template v-slot:append>
-                  <q-icon
-                    v-if="typePass === 'text'"
-                    name="fa-regular fa-eye-slash"
-                    @click="
-                      typePass = typePass === 'password' ? 'text' : 'password'
-                    "
-                    class="cursor-pointer"
-                  />
-                  <q-icon
-                    v-else
-                    class="cursor-pointer"
-                    name="fa-regular fa-eye"
-                    @click="
-                      typePass = typePass === 'password' ? 'text' : 'password'
-                    "
-                  />
-                  <!-- class="bg-green text-black" -->
+                  <q-icon class="cursor-pointer" :name="typePass === 'text' ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'"
+                    @click="typePass = typePass === 'password' ? 'text' : 'password'"/>
                   <q-tooltip :offset="[10, 10]" transition-show="jump-up">
-                    {{
-                      typePass === "text"
-                        ? "Ocultar Contraseña"
-                        : "Mostrar Contraseña"
-                    }}
+                    {{typePass === "text" ? "Ocultar Contraseña" : "Mostrar Contraseña"}}
                   </q-tooltip>
                 </template>
               </q-input>
               <div class="col-12">
-                <q-btn
-                  class="shadow-6 bg-main"
-                  label="Ingresar"
-                  no-caps
-                  size="md"
-                  color="green-5"
-                  rounded
-                  text-color="black"
-                  @click="onIngresar()"
-                />
+                <q-btn class="shadow-6 bg-main" label="Ingresar" no-caps size="md" color="green-5" rounded text-color="black" @click="onIngresar()"/>
               </div>
             </div>
-            {{ userCompleto }}
+            <!-- {{ userCompleto }} -->
           </div>
         </div>
-        <div
-          class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only bg-blue-4"
-        >
+        <div class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only bg-blue-4" >
           <div>
             <div class="col-12 text-center">
-              <span
-                class="row col-12 text-bold text-italic q-ma-none q-mb-lg text-h5"
-                >Bienvenido a Solano</span
-              >
-              <span class="col-12 text-black text-bold"
-                >Siguenos en nuestras Redes Sociales</span
-              >
+              <span class="row col-12 text-bold text-italic q-ma-none q-mb-lg text-h5">Bienvenido a Solano</span>
+              <span class="col-12 text-black text-bold">Siguenos en nuestras Redes Sociales</span>
               <div class="col-12 text-center q-mt-md">
-                <q-btn
-                  href="https://api.whatsapp.com/send/?phone=573205825363&text&type=phone_number&app_absent=0"
-                  target="_blank"
-                  size="lg"
-                  icon="fa-brands fa-whatsapp"
-                  round
-                  color="white"
-                  text-color="green"
-                  class="q-pa-none q-ma-none bg-btn"
-                >
-                  <q-tooltip
-                    class="bg-green text-black"
-                    :offset="[10, 10]"
-                    transition-show="jump-down"
-                  >
+                <q-btn href="https://api.whatsapp.com/send/?phone=573205825363&text&type=phone_number&app_absent=0" target="_blank" size="lg"
+                  icon="fa-brands fa-whatsapp" round color="white" text-color="green" class="q-pa-none q-ma-none bg-btn">
+                  <q-tooltip class="bg-green text-black" :offset="[10, 10]" transition-show="jump-down">
                     Ir a WhatsApp
                   </q-tooltip>
                 </q-btn>
-                <q-btn
-                  @click="onRedSocial('INSTAGRAM')"
-                  size="lg"
-                  icon="fa-brands fa-instagram"
-                  round
-                  color="white"
-                  text-color="pink-5"
-                  class="q-pa-none q-ml-md bg-btn"
-                >
-                  <q-tooltip
-                    class="bg-pink-5 text-black"
-                    :offset="[10, 10]"
-                    transition-show="jump-down"
-                  >
+                <q-btn @click="onRedSocial('INSTAGRAM')" size="lg" icon="fa-brands fa-instagram" round color="white" text-color="pink-5" class="q-pa-none q-ml-md bg-btn">
+                  <q-tooltip class="bg-pink-5 text-black" :offset="[10, 10]" transition-show="jump-down">
                     Ir a Instagram
                   </q-tooltip>
                 </q-btn>
-                <q-btn
-                  @click="onRedSocial('FACEBOOK')"
-                  size="lg"
-                  icon="fa-brands fa-facebook"
-                  round
-                  color="white"
-                  text-color="indigo"
-                  class="q-pa-none q-ml-md bg-btn"
-                >
-                  <q-tooltip
-                    class="bg-indigo-4 text-black"
-                    :offset="[10, 10]"
-                    transition-show="jump-down"
-                  >
+                <q-btn @click="onRedSocial('FACEBOOK')" size="lg" icon="fa-brands fa-facebook" round color="white" text-color="indigo" class="q-pa-none q-ml-md bg-btn">
+                  <q-tooltip class="bg-indigo-4 text-black" :offset="[10, 10]" transition-show="jump-down">
                     Ir a Facebook
                   </q-tooltip>
                 </q-btn>
@@ -174,10 +82,10 @@ import { useRouter } from "vue-router";
 
 //#region DATA
 const seguridadStore = useSeguridadStore();
-const cia = ref("98");
 const $q = useQuasar();
-const user = ref("OSOLANO");
-const pass = ref("OMAR2020");
+const cia = ref("98");
+const user = ref(null);
+const pass = ref(null);
 const userCompleto = ref(null);
 const typePass = ref("password");
 const router = useRouter();
@@ -206,7 +114,6 @@ const onIngresar = () => {
     .catch((e) => {});
 };
 //#endregion
-let nombre = "";
 //#region Computed
 const nombrecompelto = computed(() => {
   let r = "";
@@ -227,6 +134,10 @@ const nombrecompelto = computed(() => {
 
 //#region Hooks
 onMounted(() => {
+  if (process.env.DEV) {
+      user.value = JSON.parse(process?.env?.USER_TEST || null) || 'OSOLANO';
+      pass.value = JSON.parse(process?.env?.PASS_TEST || null) || 'OMAR2020';
+  }
   // onRequest();
 });
 //#endregion

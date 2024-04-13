@@ -214,6 +214,8 @@ const onLogout = () => {
     message: "Cerrando sesión...",
   });
   authStore.setJWT(null);
+  
+  $q.loading.hide();
 };
 //#endregion
 </script>
