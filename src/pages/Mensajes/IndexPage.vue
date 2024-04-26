@@ -148,20 +148,32 @@
         <q-markup-table class="tabla2"  dense v-if="apis?.length>0">
           <thead>
             <tr>
+              <th class="text-center"></th>
               <th class="text-center">Identificador</th>
+              <th class="text-left">Numero</th>
               <th class="text-left">Sede</th>
               <th class="text-left">EndPoint</th>
-              <th class="text-left">Numero</th>
               <th class="text-left">Descripcion</th>
             </tr>
           </thead>
           <tbody>
             <template v-for="(x,i) in apis" :key="i">
-              <tr @click="apiSelected = x, onAPIS('UPDATE',x)" class="cursor-pointer" :class="x==apiSelected ? 'bg-secondary':''" >
+              <tr @click="apiSelected = x" class="cursor-pointer" :class="x==apiSelected ? 'bg-secondary':''" >
+                <td class="text-left">
+                  <q-btn size="sm" icon="login" color="teal" round dense @click="api.LOGIN = true"/>
+                  &nbsp;
+                  <q-btn size="sm" icon="sms" color="teal" round dense @click="data.IDAPI = x.ID, api.DGTESTSMS = true"/>
+                  &nbsp;
+                  <q-btn size="sm" icon="edit" color="teal" round dense @click="onAPIS('UPDATE',x)" />
+                  &nbsp;
+                  <q-btn size="sm" :icon="x?.ACTIVO ? 'check' : 'cancel'" :color="x?.ACTIVO ? 'green' : 'red'" round dense />
+                  &nbsp;
+                  <span>{{x?.ACTIVO ? 'Activo' : 'Inactivo'}}</span>
+                </td>
                 <td class="text-center">{{x?.ID}}</td>
+                <td class="text-left">{{x?.NUMERO}}</td>
                 <td class="text-left">{{x?.IDSEDE}} {{ x?.DESCRIPCION_SEDE }}</td>
                 <td class="text-left">{{x?.ENDPOINT}}</td>
-                <td class="text-left">{{x?.NUMERO}}</td>
                 <td class="text-left">{{x?.DESCRIPCION}}</td>
               </tr>
             </template>
@@ -173,8 +185,7 @@
           <q-input class="q-pa-xs col-9" v-model="data.MENSAJE" outlined dense type="textarea" autogrow label="Mensaje" />
         </div>
       </div>
-    </div>
-    
+    </div>    
     <q-dialog v-model="api.DGAPI" persistent>
       <q-card style="width: 70%; max-width: 95%">
         <q-bar class="text-white bg-primary">
@@ -201,6 +212,54 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="api.DGTESTSMS" persistent>
+      <q-card style="width: 70%; max-width: 95%">
+        <q-bar class="text-white bg-primary">
+          <span>Prueba de Envio desde {{apis?.find(x => x?.ID===data?.IDAPI)?.DESCRIPCION}}</span>
+          <q-space/>
+          <q-btn flat icon="close" v-close-popup />
+        </q-bar>
+        <!-- <q-card-section class="row items-center"> -->
+          <div class="row col-12">
+            <q-select class="q-pa-xs col-3" v-model="data.IDAPI" outlined dense emit-value map-options :options="apis" clr label="Enviar Desde"
+              option-value="ID" :option-label="'DESCRIPCION'" disable/>
+            <q-input class="q-pa-xs col-2" v-model="data.NUMERO" outlined dense type="number" label="Enviar a:" :maxlength="10"
+              :rules="[(val) => (+val?.length === 10 && val?.toString()?.substring(0, 1) == '3') || 'Numero de celular incorrecto',]"/>
+            <q-input class="q-pa-xs col-7" v-model="data.MENSAJE" outlined dense type="textarea" autogrow label="Mensaje" />
+          </div>
+        <!-- </q-card-section> -->
+        <q-card-actions align="right">
+          <q-btn flat dense color="green-4" label="Enviar"  icon="send" @click="onSMS()" />
+          <q-btn flat dense color="red-4" label="Salir" icon="close" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="api.LOGIN" persistent>
+      <q-card style="width: 70%; max-width: 95%">
+        <q-bar class="text-white bg-primary">
+          <!-- <span>Prueba de Envio desde {{apis?.find(x => x?.ID===data?.IDAPI)?.DESCRIPCION}}</span> -->
+          <q-space/>
+          <q-btn flat icon="close" v-close-popup />
+        </q-bar>
+        <q-card-section class="row items-center">
+          <!-- <div class="row col-12"> -->
+            <q-img
+            spinner-color="primary"
+            spinner-size="82px"
+            src="/qr/qr.svg"
+            width="50%"
+            height="50%"
+            />
+            <!-- src="/dist/alta3.png" -->
+            <!-- :src="rutaimg" -->
+            <!-- src="https://picsum.photos/500/300?t=123" -->
+          <!-- </div> -->
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat dense color="red-4" label="Salir" icon="close" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -210,20 +269,19 @@ import { ref, onMounted, computed, watch } from "vue";
 import { useAppStore } from "stores/app";
 import { useSeguridadStore } from "stores/seguridad";
 import ServerSideTableComponent from "src/components/ServerSideTableComponent.vue";
-
 //#region DATA
 const $q = useQuasar();
 const appStore = useAppStore();
 const authStore = useSeguridadStore();
 const filtro = ref({});
 const filter = ref("");
-const vista = ref("sms");
+const vista = ref("settings");
 const vista2 = ref("Contactos");
-
 const api = ref({});
 const apiSelected = ref({});
 const apis = ref([]);
 const apiFrom = ref(null);
+const rutaimg = ref(null);
 const tableSMSLref = ref(null);
 const data = ref({});
 const dtSMSL = ref({
@@ -325,6 +383,10 @@ watch(whereSMSL, (newWhere, oldWhere) => {
 });
 //#endregion
 onMounted(() => {
+  // console.log('aca path=',process.cwd())
+  // console.log('aca path=',path.resolve('../'))
+  // console.log('aca path=',path.resolve('aca','aca'))
+
   onAPIS('CONSULTAR')
   data.value.NUMERO = usuario?.value?.CELULAR
 });
