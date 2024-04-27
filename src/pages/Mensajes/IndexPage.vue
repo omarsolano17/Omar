@@ -32,7 +32,7 @@
                     </q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup dense>
+                <q-item clickable v-close-popup dense @click="vista2='smsCampanas'">
                   <q-item-section avatar >
                     <q-item-label class="row flex flex-center">
                       <q-avatar color="green" text-color="black" icon="group" dense size="sm" class="q-mr-xs"/>
@@ -89,6 +89,54 @@
           <q-input class="q-pa-xs col-2" v-model="data.NUMERO" outlined dense type="number" label="Enviar a:" :maxlength="10"
           :rules="[(val) => (+val?.length === 10 && val?.toString()?.substring(0, 1) == '3') || 'Numero de celular incorrecto',]"/>
           <q-input class="q-pa-xs col-7" v-model="data.MENSAJE" outlined dense type="textarea" autogrow label="Mensaje" />
+        </div>
+        <div class="row col-12 q-pa-xs" v-if="vista2==='smsCampanas'">
+          <q-select class="q-pa-xs col-3" v-model="data.IDAPI" outlined dense emit-value map-options clearable
+            :options="apis" clr label="Enviar Desde:" option-value="ID" :option-label="'DESCRIPCION'"/>
+          <q-input class="q-pa-xs col-7" v-model="data.MENSAJE" outlined dense type="textarea" autogrow label="Mensaje" />
+          <q-btn class="col-2 q-pa-sm" round dense color="green-4" label="Enviar Campaña" no-caps icon="send" @click="onSMS('ENVIAR_MASIVO')" flat/>
+          <q-separator class="q-mt-xs" spaced />
+          <div class="col-6 q-pa-xs"  align="left" >
+            <div class="row">
+              <q-input class="q-pa-xs col-9" v-model="data.NUMERO" outlined dense type="number" label="Agregar Manual:" :maxlength="10"
+              :rules="[(val) => (+val?.length === 10 && val?.toString()?.substring(0, 1) == '3') || 'Numero de celular incorrecto',]"/>
+              <q-btn class="col-3 q-pa-xs" dense  label="Add Manual" no-caps icon-right="fa-solid fa-arrow-right" @click="onAdd()" flat/>
+              
+              <q-file class="col-9 q-pa-xs" outlined v-model="fileUpload" dense label="Seleccionar Archivo:" >
+                <template v-slot:prepend>
+                  <q-icon name="attach_file" />
+                </template>
+              </q-file>
+              <q-btn class="col-3 q-pa-xs" dense  label="Subir TXT" no-caps icon-right="upload" @click="onSubirTXT()" flat/>
+            </div>
+          </div>
+          <div class="row col-6 q-pa-xs"  align="left" >
+            <q-markup-table dense separator="cell" class="col-12" v-if="data?.NUMEROS?.length>0" style="max-height: 30rem;">
+              <thead>
+                <tr class="bg-primary text-white">
+                  <th class="text-center"></th>
+                  <th class="text-center">Numero</th>
+                  <th class="text-center">Referencia</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template v-for="(num, i) in data?.NUMEROS" :key="i">
+                  <tr @click="current_num = num" class="cursor-pointer q-pa-none" :class="current_num === num ? 'bg-secondary' : ''">
+                    <td class="text-center">
+                      <q-btn class="q-pa-xs" dense  no-caps icon-right="delete" color="red" @click="onRetirar(num)" flat>
+                      </q-btn>
+                    </td>
+                    <td class="text-center">
+                      {{num?.NUMERO}}
+                    </td>
+                    <td class="text-center">
+                      {{num?.REFERENCIA}}
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </q-markup-table>
+          </div>
         </div>
         <div class="row col-12 flex q-pt-xs" v-if="vista2==='Historial'">
           <q-select class="q-pa-xs col-3" v-model="filtro.MEDIO" outlined dense emit-value map-options clearable
@@ -250,9 +298,6 @@
             width="50%"
             height="50%"
             />
-            <!-- src="/dist/alta3.png" -->
-            <!-- :src="rutaimg" -->
-            <!-- src="https://picsum.photos/500/300?t=123" -->
           <!-- </div> -->
         </q-card-section>
         <q-card-actions align="right">
@@ -275,15 +320,17 @@ const appStore = useAppStore();
 const authStore = useSeguridadStore();
 const filtro = ref({});
 const filter = ref("");
-const vista = ref("settings");
-const vista2 = ref("Contactos");
+const vista = ref("sms");
+const vista2 = ref("smsCampanas");
 const api = ref({});
 const apiSelected = ref({});
 const apis = ref([]);
 const apiFrom = ref(null);
 const rutaimg = ref(null);
+const current_num = ref(null);
 const tableSMSLref = ref(null);
-const data = ref({});
+const data = ref({NUMEROS:[]});
+const fileUpload = ref(null);
 const dtSMSL = ref({
   columnas: [
     {name: "VIA", required: true, label: "Medio", align: "left", field: (row) => row.VIA, format: (val) => val, sortable: true},
@@ -298,17 +345,59 @@ const dtSMSL = ref({
 //#endregion
 
 //#region METHODS
-const onSMS = () => {
+const onSMS = async (metodo) => {
+  let continua = true
+  if (metodo==='ENVIAR_MASIVO'){
+    let cant = data?.value?.NUMEROS?.length
+    if (cant<=0){
+      $q.notify({message: `Debe seleccionar al menos un numero`,  color: 'negative', position: 'top', timeout: 2000 })
+      return
+    }
+    if (!data?.value?.MENSAJE || data?.value?.MENSAJE?.length<=5){
+      $q.notify({message: `Debe escribir un mensaje correcto`,  color: 'negative', position: 'top', timeout: 2000 })
+      return
+    }
+    if (!data?.value?.IDAPI){
+      $q.notify({message: `Debe seleccionar el origen de envio`,  color: 'negative', position: 'top', timeout: 2000 })
+      return
+    }
+    continua = await new Promise((resolve, reject) => {
+      $q.dialog({
+        title: "Campaña",
+        message: `¿Está seguro de enviar esta campaña a estos ${cant} numeros?`,
+        cancel: {
+          label: "No",
+          color: "negative",
+        },
+        ok: {
+          label: "Si",
+          color: "positive",
+        },
+      })
+      .onOk(() => {
+        resolve(true);
+      })
+      .onCancel(() => {
+        resolve(false);
+      });
+    });
+  }
+  if (!continua) return
   appStore
   .json({
     MODELO: "SMS",
-    METODO: "ENVIAR",
-    PARAMETROS: { NUMERO:  data?.value?.NUMERO, MENSAJE: data?.value?.MENSAJE, IDAPI: data?.value?.IDAPI},
+    METODO: metodo || "ENVIAR",
+    PARAMETROS: { 
+      NUMERO:  data?.value?.NUMERO, 
+      MENSAJE: data?.value?.MENSAJE, 
+      IDAPI: data?.value?.IDAPI,
+      NUMEROS:  data?.value?.NUMEROS,
+    },
   })
   .then((res) => {
     if (res?.data?.result?.recordsets[0][0]?.OK === "OK") {
       apiFrom.value = data?.value?.IDAPI
-      $q.notify({message: `Mensaje de prueba enviado a ${data?.value?.NUMERO} Correctamente`,  color: 'positive', position: 'top', timeout: 2000 })
+      $q.notify({message: `Mensaje enviado de manera Correcta`,  color: 'positive', position: 'top', timeout: 2000 })
       data.value = {}
       data.value.IDAPI = apiFrom.value
     }
@@ -354,6 +443,33 @@ const onAPIS = (metodo, fila) => {
       });
   }
 };
+const onSubirTXT = async () => {
+  if (fileUpload.value) {
+    // data.value.NUMEROS = []
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target.result;
+      content.split(/\r?\n/).forEach((line) => {
+        const linea = line.split(',')
+        if (data?.value?.NUMEROS?.filter(x => x?.NUMERO==linea[0])?.length<=0)
+          data.value.NUMEROS.push({NUMERO: linea[0], REFERENCIA: linea[1]})
+      })      
+    };
+    reader.readAsText(fileUpload.value);
+  }
+  // fileUpload.value = null
+};
+const onAdd = async () => {
+  if (data?.value?.NUMEROS?.filter(x => x?.NUMERO==data?.value?.NUMERO)?.length<=0 && data?.value?.NUMERO!==null && data?.value?.NUMERO !==''){
+    data.value.NUMEROS.push({NUMERO: data?.value?.NUMERO, REFERENCIA: ''})
+    data.value.NUMERO = null
+  }else{
+    $q.notify({message: `Numero ya se encuentra en la lista o no es valido`,  color: 'negative', position: 'top', timeout: 2000 })
+  }
+};
+const onRetirar = async (fila) => {
+  data.value.NUMEROS = data?.value?.NUMEROS?.filter(x => x?.NUMERO!==fila.NUMERO)
+}
 //#endregion
 
 //#region COMPUTED
