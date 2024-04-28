@@ -21,10 +21,10 @@
       <div class="col-12" v-if="vista==='sms'">
         <q-bar style="min-width: 250px;" class="bg-teal text-white rounded-borders">
           <div class="cursor-pointer non-selectable">
-            Menu
+            Opciones
             <q-menu fit >
               <q-list style="min-width: 100px" dense separator>
-                <q-item clickable v-close-popup dense @click="vista2='Mensajes'">
+                <q-item clickable v-close-popup dense @click="vista2='Mensajes'" v-if="false">
                   <q-item-section avatar >
                     <q-item-label class="row flex flex-center">
                       <q-avatar color="green" text-color="white" icon="message" dense size="sm" class="q-mr-xs"/>
@@ -32,11 +32,11 @@
                     </q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup dense @click="vista2='smsCampanas'">
+                <q-item clickable v-close-popup dense @click="vista2='Contactos'" v-if="false">
                   <q-item-section avatar >
                     <q-item-label class="row flex flex-center">
-                      <q-avatar color="green" text-color="black" icon="group" dense size="sm" class="q-mr-xs"/>
-                      Campañas
+                      <q-avatar color="green" text-color="white" icon="message" dense size="sm" class="q-mr-xs"/>
+                      Contactos
                     </q-item-label>
                   </q-item-section>
                 </q-item>
@@ -48,11 +48,11 @@
                     </q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup dense @click="vista2='Contactos'">
+                <q-item clickable v-close-popup dense @click="vista2='smsCampanas'">
                   <q-item-section avatar >
                     <q-item-label class="row flex flex-center">
-                      <q-avatar color="green" text-color="white" icon="message" dense size="sm" class="q-mr-xs"/>
-                      Contactos
+                      <q-avatar color="green" text-color="black" icon="group" dense size="sm" class="q-mr-xs"/>
+                      Campañas
                     </q-item-label>
                   </q-item-section>
                 </q-item>
@@ -67,7 +67,7 @@
               </q-list>
             </q-menu>
           </div>
-          <div class="cursor-pointer non-selectable">
+          <div class="cursor-pointer non-selectable" v-if="false">
             Folder
             <q-menu>
               <q-list style="min-width: 100px">
@@ -83,6 +83,7 @@
           </div>
         </q-bar>
         <div class="row col-12 flex q-pt-xs" v-if="vista2==='Pruebas'">
+          <span class="col-12 text-bold text-body2 text-center"> Envio de mensajes de pruebas</span>
           <q-btn class="row col-12 q-ml-sm" round dense color="green-4" label="Enviar"  icon="send" @click="onSMS()" flat/>
           <q-select class="q-pa-xs col-3" v-model="data.IDAPI" outlined dense emit-value map-options :options="apis" clr label="Enviar Desde"
             option-value="ID" :option-label="'DESCRIPCION'"/>
@@ -91,6 +92,7 @@
           <q-input class="q-pa-xs col-7" v-model="data.MENSAJE" outlined dense type="textarea" autogrow label="Mensaje" />
         </div>
         <div class="row col-12 q-pa-xs" v-if="vista2==='smsCampanas'">
+          <span class="col-12 text-bold text-body2 text-center"> Envio masivo de mensajes - Campañas</span>
           <q-select class="q-pa-xs col-3" v-model="data.IDAPI" outlined dense emit-value map-options clearable
             :options="apis" clr label="Enviar Desde:" option-value="ID" :option-label="'DESCRIPCION'"/>
           <q-input class="q-pa-xs col-7" v-model="data.MENSAJE" outlined dense type="textarea" autogrow label="Mensaje" />
@@ -139,6 +141,7 @@
           </div>
         </div>
         <div class="row col-12 flex q-pt-xs" v-if="vista2==='Historial'">
+          <span class="col-12 text-bold text-body2 text-center"> Historial de envio de mensajes</span>
           <q-select class="q-pa-xs col-3" v-model="filtro.MEDIO" outlined dense emit-value map-options clearable
             :options="[{value: 'SMS', label:'Texto'},{value: 'WHATSAPP', label:'Whatsapp'},]"  label="Medio"/>
           <q-select v-if="filtro.MEDIO==='WHATSAPP'" class="q-pa-xs col-3" v-model="filtro.IDAPI" outlined dense emit-value map-options clearable 
@@ -151,7 +154,7 @@
             :columnas_visibles="dtSMSL.columnas_visibles"
             :columnas="dtSMSL.columnas"
             :columnas_filtro="dtSMSL.columnas_filtro"
-            row_key=" ITEM "
+            row_key="ITEM"
             ordenarPor="ITEM DESC"
             :dense="true"
             colorSelect="green-2"
@@ -191,7 +194,7 @@
             /> -->
         </div>
       </div>
-      <div class="col-12" v-else>        
+      <div class="col-12" v-else> 
         <q-btn class="row col-12 q-ml-sm" round dense color="green-4" label="Agregar"  icon="add" @click="onAPIS('NUEVO')" flat v-if="usuario?.USUARIO==='OSOLANO'"/>
         <q-markup-table class="tabla2"  dense v-if="apis?.length>0">
           <thead>
@@ -200,7 +203,7 @@
               <th class="text-center">Identificador</th>
               <th class="text-left">Numero</th>
               <th class="text-left">Sede</th>
-              <th class="text-left">EndPoint</th>
+              <!-- <th class="text-left">EndPoint</th> -->
               <th class="text-left">Descripcion</th>
             </tr>
           </thead>
@@ -221,7 +224,7 @@
                 <td class="text-center">{{x?.ID}}</td>
                 <td class="text-left">{{x?.NUMERO}}</td>
                 <td class="text-left">{{x?.IDSEDE}} {{ x?.DESCRIPCION_SEDE }}</td>
-                <td class="text-left">{{x?.ENDPOINT}}</td>
+                <!-- <td class="text-left">{{x?.ENDPOINT}}</td> -->
                 <td class="text-left">{{x?.DESCRIPCION}}</td>
               </tr>
             </template>
@@ -313,7 +316,9 @@ import { useQuasar } from "quasar";
 import { ref, onMounted, computed, watch } from "vue";
 import { useAppStore } from "stores/app";
 import { useSeguridadStore } from "stores/seguridad";
+import { useFechas } from "src/boot/useFechas";
 import ServerSideTableComponent from "src/components/ServerSideTableComponent.vue";
+// import { useFechas } from "stores/seguridad";
 //#region DATA
 const $q = useQuasar();
 const appStore = useAppStore();
@@ -321,7 +326,7 @@ const authStore = useSeguridadStore();
 const filtro = ref({});
 const filter = ref("");
 const vista = ref("sms");
-const vista2 = ref("smsCampanas");
+const vista2 = ref("Pruebas");
 const api = ref({});
 const apiSelected = ref({});
 const apis = ref([]);
@@ -331,13 +336,15 @@ const current_num = ref(null);
 const tableSMSLref = ref(null);
 const data = ref({NUMEROS:[]});
 const fileUpload = ref(null);
+const { getFechaCorta, getHora, getFechaCortaGringa } = useFechas();
 const dtSMSL = ref({
   columnas: [
     {name: "VIA", required: true, label: "Medio", align: "left", field: (row) => row.VIA, format: (val) => val, sortable: true},
     {name: "CONTACTO", required: true, label: "Numero", align: "left", field: (row) => row.CONTACTO, format: (val) => val, sortable: true},
-    {name: "MENSAJE", required: true, label: "Mensaje", align: "left", field: (row) => row.MENSAJE, format: (val) => val, sortable: true},
+    {name: "FECHA", required: true, label: "Fecha", align: "left", field: (row) => row.FECHA, format: (val) => `${getFechaCorta(val)} - ${getHora(val)}`, sortable: true},
+    {name: "MENSAJE", required: true, label: "Mensaje", align: "left", field: (row) => row.MENSAJE, format: (val)=> val, sortable: true},
   ],
-  columnas_visibles: "ITEM, VIA, CONTACTO, MENSAJE",
+  columnas_visibles: "ITEM, VIA, CONTACTO, MENSAJE, FECHA",
   columnas_filtro: "CONTACTO, MENSAJE"
 })
 
@@ -433,6 +440,10 @@ const onAPIS = (metodo, fila) => {
       .then((res) => {
         if (res?.data?.result?.recordsets[0][0]?.OK === "OK") {
           apis.value = res?.data?.result?.recordsets[1]
+          if (apis?.value?.length===1) {
+            data.value.IDAPI = apis.value[0]
+            filtro.value.IDAPI = apis.value[0]
+          }
           if (!data?.value?.IDAPI) apiFrom.value = apis?.value[0]?.ID
           if (metodo==='CONSULTAR') return
 
