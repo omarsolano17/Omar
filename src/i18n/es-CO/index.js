@@ -2,7 +2,7 @@
 // so you can safely delete all default props below
 
 export default {
-  nombre_sistema: "OSOLANO",
+  nombre_sistema: "WhatsApp API Enterprise",
   button: {
     ok: "Aceptar",
     yes: "Sí",

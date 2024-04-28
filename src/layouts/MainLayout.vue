@@ -16,7 +16,7 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-        <q-toolbar-title> Solano Enterprise - Menu Central</q-toolbar-title>
+        <q-toolbar-title> {{$t('nombre_sistema')}} - Menu Central</q-toolbar-title>
         <div>(Quasar v{{ $q.version }})&nbsp;</div>
         <!-- <CambioDatosUsuario :usuario="usuario" /> -->
         <q-separator spaced inset vertical dark />

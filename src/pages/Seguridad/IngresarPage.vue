@@ -33,15 +33,14 @@
                 <q-btn class="shadow-6 bg-main" label="Ingresar" no-caps size="md" color="green-5" rounded text-color="black" @click="onIngresar()"/>
               </div>
             </div>
-            <!-- {{ userCompleto }} -->
           </div>
         </div>
         <div class="col-12 col-md-6 col-sm-6 flex flex-center large-screen-only bg-blue-4" >
           <div>
             <div class="col-12 text-center">
-              <span class="row col-12 text-bold text-italic q-ma-none q-mb-lg text-h5">Bienvenido a Solano</span>
+              <span class="row col-12 text-bold text-italic q-ma-none q-mb-lg text-h5">Bienvenido a {{$t('nombre_sistema')}}</span>
               <span class="col-12 text-black text-bold">Siguenos en nuestras Redes Sociales</span>
-              <div class="col-12 text-center q-mt-md">
+              <div class="col-12 text-center q-mt-md" v-if="false">
                 <q-btn :href="`https://api.whatsapp.com/send/?phone=${whatsapp}&text&type=phone_number&app_absent=0`" target="_blank" size="lg"
                   icon="fa-brands fa-whatsapp" round color="white" text-color="green" class="q-pa-none q-ma-none bg-btn">
                   <q-tooltip class="bg-green text-black" :offset="[10, 10]" transition-show="jump-down">
@@ -80,9 +79,9 @@ import { useRouter } from "vue-router";
 //#region DATA
 const seguridadStore = useSeguridadStore();
 const $q = useQuasar();
-const cia = ref("98");
 const user = ref(null);
 const pass = ref(null);
+const cia = ref('32');
 const userCompleto = ref(null);
 const whatsapp = ref('573205825363');
 const instagram = ref('solanoomar82');
@@ -116,9 +115,10 @@ const onIngresar = () => {
 };
 //#endregion
 //#region COMPUTED
-const nombrecompelto = computed(() => {
-  return '';
-});
+//const cia = computed(() => {
+  //return  ;
+//});
+
 //#endregion
 //#region WATCH
 // watch(nombrecompelto, (newWhere, oldWhere) => {
@@ -127,8 +127,8 @@ const nombrecompelto = computed(() => {
 //#region HOOKS
 onMounted(() => {
   if (process.env.DEV) {
-      user.value = JSON.parse(process?.env?.USER_TEST || null) || 'OSOLANO';
-      pass.value = JSON.parse(process?.env?.PASS_TEST || null) || 'OMAR2020';
+      user.value = JSON.parse(process?.env?.USER_TEST || null) ;
+      pass.value = JSON.parse(process?.env?.PASS_TEST || null) ;
   }
 });
 //#endregion

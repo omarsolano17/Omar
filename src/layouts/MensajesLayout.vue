@@ -4,7 +4,7 @@
       <q-toolbar class="q-pa-none q-ma-none" >
         <q-btn v-if="false" dense round :icon="!leftDrawerOpen ? 'double_arrow' : lockMiniState ? 'menu_open' : 'menu'" aria-label="Menu" @click="toggleLeftDrawer"/>
         
-        <q-toolbar-title> Solano Enterprise </q-toolbar-title>
+        <q-toolbar-title> {{$t('nombre_sistema')}} </q-toolbar-title>
         <q-separator spaced inset vertical dark />
         <span class="q-pa-xs">
           {{ usuario.NOMBRE || "" }} - {{ usuario.DB_NAME || "" }}

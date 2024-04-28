@@ -67,12 +67,6 @@ module.exports = configure(function (/* ctx */) {
       // publicPath: '/',
       // analyze: true,
       env: env,
-      // env: {
-      //   BASE_URL: BASE_URL + "api/",
-      //   SOCKET_URL: SOCKET_URL,
-      //   USER_TEST: "OSOLANO",
-      //   PASS_TEST: "OMAR2020",
-      // },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
