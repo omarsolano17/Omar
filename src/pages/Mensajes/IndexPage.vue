@@ -441,8 +441,8 @@ const onAPIS = (metodo, fila) => {
         if (res?.data?.result?.recordsets[0][0]?.OK === "OK") {
           apis.value = res?.data?.result?.recordsets[1]
           if (apis?.value?.length===1) {
-            data.value.IDAPI = apis.value[0]
-            filtro.value.IDAPI = apis.value[0]
+            data.value.IDAPI = apis.value[0].ID
+            filtro.value.IDAPI = apis.value[0].ID
           }
           if (!data?.value?.IDAPI) apiFrom.value = apis?.value[0]?.ID
           if (metodo==='CONSULTAR') return
